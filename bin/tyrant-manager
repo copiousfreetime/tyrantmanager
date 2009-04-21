@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+#--
+# Copyright (c) 2009 
+# All rights reserved.  See LICENSE and/or COPYING for details.
+#++
+
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
+require 'tyrant-manager'
+
+puts "I am the killer app tyrant-manager at version #{TyrantManager::VERSION}!"
