@@ -1,0 +1,47 @@
+Tyrant Manager:
+    Configuration:
+        - top level configuration for tyrant_home
+            - global defaults for 
+                - update_log_size_limit
+                - threads
+                - timeout
+                - log_level
+            - instance dirs
+            - look at couchdb configuration
+            - look at postgres configuration
+        - per db configuration for instance_home
+            - host:port -- to listen on
+            - daemonize -- default true
+            - log_level
+            - update_log_use_async_io
+            - master host:port
+            - extension
+                - file
+                - periodic command
+                - period
+            - command_access_deny -- list
+            - command_access_allow -- list
+            - short files, relative to instance_dir
+                - pid file
+                - rts file
+                - configuration.yml
+            - heavy write, default relative to instance_dir, or full path
+                - log_file
+                - update_log_directory
+                - db_directory directory
+            - bucket_size
+            - options -- default ld
+            - mode
+            - compression 
+
+    Startup Script:
+        - startup script generation -- simple shell, executes the tyrant-manager
+        - main command line -- all the commands, and they tak an optional instance
+          or all -- no default
+            - start 
+            - stop
+            - reload
+            - restart
+            - add -- instance_dir
+            - remove -- not yet
+            - status
