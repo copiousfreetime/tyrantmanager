@@ -7,11 +7,11 @@ require 'tasks/utils'
 # General project configuration
 #-----------------------------------------------------------------------
 Configuration.for('project') {
-  name          "tyrant-manager"
+  name          "tyrantmanager"
   version       TyrantManager::Version.to_s 
   author        "Jeremy Hinegardner"
   email         "jeremy@copiousfreetime.org"
-  homepage      "http://tyrant-manager.rubyforge.org/"
+  homepage      "http://copiousfreetime.rubyforge.org/tyrantmanager"
   description   Utils.section_of("README", "description")
   summary       description.split(".").first
   history       "HISTORY"

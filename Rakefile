@@ -26,7 +26,7 @@ require 'rake/clean'
 #-------------------------------------------------------------------------------
 require 'tyrant_manager'
 Configuration.for("project") {
-  name      "tyrant-manager"
+  name      "tyrantmanager"
   version   TyrantManager::VERSION
   author    "Jeremy Hinegardner"
   email     "jeremy@copiousfreetime.org"

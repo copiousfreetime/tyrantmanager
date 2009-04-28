@@ -1,4 +1,4 @@
-require 'tyrant-manager/version'
+require 'tyrant_manager/version'
 
 #-------------------------------------------------------------------------------
 # Additions to the Configuration class that are useful

@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'tyrant-manager/version'
+require 'tyrant_manager/version'
 require 'tasks/config'
 
 TyrantManager::GEM_SPEC = Gem::Specification.new do |spec|

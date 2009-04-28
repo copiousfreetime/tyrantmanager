@@ -1,3 +1,4 @@
+require 'rbconfig'
 module TyrantManager
   module Paths
     # The root directory of the project is considered to be the parent directory
@@ -46,9 +47,6 @@ module TyrantManager
       home_path( "config", *args )
     end 
 
-    def data_path( *args )
-      home_path( "data", *args )
-    end 
 
     def log_path( *args )
       home_path( "log", *args )
@@ -66,4 +64,11 @@ module TyrantManager
     extend self
   end
   extend Paths
+
+  # set the default home_dir for the manager to be the lib/tyrant in the local
+  # state dir directory.  Instances are below them.
+  self.home_dir = File.join( Config::CONFIG['localstatedir'], 'lib', 'tyrant' )
+  def self.default_instances_dir
+    self.home_path( "instances" )
+  end
 end
