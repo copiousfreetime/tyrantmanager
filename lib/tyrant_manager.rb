@@ -7,5 +7,5 @@ module TyrantManager
   class Error < StandardError; end
 end
 
-require 'tyrant-manager/version'
-require 'tyrant-manager/paths'
+require 'tyrant_manager/version'
+require 'tyrant_manager/paths'

@@ -6,6 +6,6 @@
 #++
 
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
-require 'tyrant-manager'
+require 'tyrant_manager'
 
 puts "I am the killer app tyrant-manager at version #{TyrantManager::VERSION}!"

@@ -7,8 +7,8 @@ Tyrant Manager:
                 - timeout
                 - log_level
             - instance dirs
-            - look at couchdb configuration
-            - look at postgres configuration
+            - look at couchdb configuration @done(2009-04-28 16:35:34)
+            - look at postgres configuration @done(2009-04-28 16:35:35)
         - per db configuration for instance_home
             - host:port -- to listen on
             - daemonize -- default true

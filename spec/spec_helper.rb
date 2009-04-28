@@ -2,4 +2,4 @@ require 'rubygems'
 require 'spec'
 
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
-require 'tyrant-manager'
+require 'tyrant_manager'

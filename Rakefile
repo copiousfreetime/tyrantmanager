@@ -24,7 +24,7 @@ require 'rake/clean'
 # Main configuration for the project, these overwrite the items that are in
 # tasks/config.rb
 #-------------------------------------------------------------------------------
-require 'tyrant-manager'
+require 'tyrant_manager'
 Configuration.for("project") {
   name      "tyrant-manager"
   version   TyrantManager::VERSION
