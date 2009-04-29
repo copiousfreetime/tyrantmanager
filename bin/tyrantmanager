@@ -7,5 +7,5 @@
 
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'tyrant_manager'
-
-puts "I am the killer app tyrant-manager at version #{TyrantManager::VERSION}!"
+require 'tyrant_manager/cli'
+::TyrantManager::Cli.new( ARGV, ENV ).run

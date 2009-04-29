@@ -36,7 +36,7 @@ Tyrant Manager:
 
     Startup Script:
         - startup script generation -- simple shell, executes the tyrant-manager
-        - main command line -- all the commands, and they tak an optional instance
+        - main command line -- all the commands, and they take an optional instance
           or all -- no default
             - start 
             - stop
