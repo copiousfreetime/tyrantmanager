@@ -1,37 +1,41 @@
-module TyrantManager
+class TyrantManager
   module Paths
-    # The root directory of the project is considered to be the parent directory
+    # The installation directory of the project is considered to be the parent directory
     # of the 'lib' directory.
     #   
-    def root_dir
-      @root_dir ||= (
+    def install_dir
+      @install_dir ||= (
         path_parts = ::File.expand_path(__FILE__).split(::File::SEPARATOR)
         lib_index  = path_parts.rindex("lib")
         path_parts[0...lib_index].join(::File::SEPARATOR) + ::File::SEPARATOR
       )
     end 
 
-    def root_path( sub, *args )
-      sub_path( root_dir, sub, *args )
+    def install_path( sub, *args )
+      sub_path( install_dir, sub, *args )
     end
 
     def bin_path( *args )
-      root_path( 'bin', *args )
+      install_path( 'bin', *args )
     end
 
     def lib_path( *args )
-      root_path( "lib", *args )
+      install_path( "lib", *args )
     end 
 
+    def data_path( *args )
+      install_path( "data", *args )
+    end
+
     def spec_path( *args )
-      root_path( "spec", *args )
+      install_path( "spec", *args )
     end
 
     # The home dir is the home directory of the project while it is running
-    # by default, this the same as the root_dir.  But if this value is set 
+    # by default, this the same as the install_dir.  But if this value is set 
     # then it affects other paths
     def home_dir
-      @home_dir ||= root_dir
+      @home_dir ||= install_dir
     end
 
     def home_dir=( other )
@@ -41,10 +45,6 @@ module TyrantManager
     def home_path( sub, *args )
       sub_path( home_dir, sub, *args )
     end
-
-    def config_path( *args )
-      home_path( "config", *args )
-    end 
 
     def instances_path( *args )
       home_path( "instances", *args )

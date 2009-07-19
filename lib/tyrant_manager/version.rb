@@ -3,7 +3,7 @@
 # All rights reserved.  See LICENSE and/or COPYING for details
 #++
 
-module TyrantManager
+class TyrantManager
   module Version
     MAJOR   = 1
     MINOR   = 0
@@ -21,10 +21,7 @@ module TyrantManager
       { :major => MAJOR, :minor => MINOR, :build => BUILD }
     end
 
-    STRING = Version.to_s
     extend self
-
   end
   VERSION = Version.to_s
-  extend Version
 end

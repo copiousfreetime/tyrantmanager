@@ -8,7 +8,7 @@ require 'tasks/utils'
 #-----------------------------------------------------------------------
 Configuration.for('project') {
   name          "tyrantmanager"
-  version       TyrantManager::Version.to_s 
+  version       TyrantManager::VERSION
   author        "Jeremy Hinegardner"
   email         "jeremy@copiousfreetime.org"
   homepage      "http://copiousfreetime.rubyforge.org/tyrantmanager"
