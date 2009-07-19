@@ -42,4 +42,16 @@ module TyrantManager
        validate { |l| %w[ debug info warn error fatal off ].include?( l.downcase ) }
      end
    end
+
+   #
+   # Convert the Parameters::List that exists as the parameters from Main
+   #
+   def Cli.params_to_hash( params )
+     (hash = params.to_hash ).keys.each { |key| hash[key] = hash[key].value }
+     return hash
+   end
+
+   def Cli.run_command_with_params( command, params )
+     ::TyrantManager::Runner.new( Cli.params_to_hash( params ) ).run( command )
+   end 
 end

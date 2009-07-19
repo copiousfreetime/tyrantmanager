@@ -26,7 +26,7 @@ describe TyrantManager::Paths do
       TyrantManager::Paths.home_dir = @tmp_dir
     end
 
-    %w[ config log tmp ].each do |d|
+    %w[ config log tmp instances ].each do |d|
       check_path = "#{d}_path"
       it "affects the location of #{check_path}" do
         p = TyrantManager::Paths.send( check_path )

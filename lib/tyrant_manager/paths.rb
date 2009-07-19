@@ -1,4 +1,3 @@
-require 'rbconfig'
 module TyrantManager
   module Paths
     # The root directory of the project is considered to be the parent directory
@@ -47,6 +46,9 @@ module TyrantManager
       home_path( "config", *args )
     end 
 
+    def instances_path( *args )
+      home_path( "instances", *args )
+    end
 
     def log_path( *args )
       home_path( "log", *args )
