@@ -5,7 +5,7 @@
 
 require 'tyrant_manager/version'
 require 'tyrant_manager/paths'
-require 'tyrant_manager/console'
+require 'tyrant_manager/log'
 
 class TyrantManager
   include TyrantManager::Paths
@@ -99,7 +99,7 @@ class TyrantManager
     #
     def setup( dir = default_directory )
       unless File.directory?( dir )
-        Console.info "Creating directory #{dir}"
+        logger.info "Creating directory #{dir}"
         FileUtils.mkdir_p( dir )
       end
 
@@ -107,13 +107,13 @@ class TyrantManager
 
       unless File.exist?( cfg )
         template = TyrantManager::Paths.data_path( config_file_basename )
-        Console.info "Creating default config file #{cfg}"
+        logger.info "Creating default config file #{cfg}"
         FileUtils.cp( template, dir )
       end
 
       %w[ instances log tmp ].each do |subdir|
         subdir = File.join( dir, subdir )
-        Console.info "Creating dirctory #{subdir}"
+        logger.info "Creating dirctory #{subdir}"
         FileUtils.mkdir subdir
       end
     end
@@ -123,7 +123,7 @@ class TyrantManager
   # Initialize the manager, which is nothing more than creating the instance and
   # setting the home directory.
   #
-  def initialize( directory = TyrantMnager.default_directory )
+  def initialize( directory = TyrantManager.default_directory )
     self.home_dir = File.expand_path( directory ) 
     if File.exist?( self.config_file ) then
       configuration # force a load
@@ -144,6 +144,13 @@ class TyrantManager
   #
   def configuration
     @configuration ||= eval( IO.read( config_file ) )
+  end
+
+  #
+  # Create a runner instance with the given options
+  #
+  def runner_for( options )
+    Runner.new( self, options )
   end
 end
 

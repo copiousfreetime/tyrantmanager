@@ -21,7 +21,7 @@ class TyrantManager
       default TyrantManager.home_dir
       end
 
-    run { Cli.run_command_with_params( 'setup', params ) }
+      run { Cli.run_command_with_params( 'setup', params ) }
     }
 
 
@@ -53,6 +53,8 @@ class TyrantManager
   end
 
   def Cli.run_command_with_params( command, params )
-    #   ::TyrantManager::Runner.new( Cli.params_to_hash( params ) ).run( command )
+    phash = Cli.params_to_hash( params )
+    tm = TyrantManager.new( phash.delete('home') )
+    tm.runner_for( phash ).run( command )
   end 
 end

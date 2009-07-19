@@ -3,10 +3,9 @@ require File.expand_path(File.join(File.dirname(__FILE__),"spec_helper.rb"))
 require 'tyrant_manager'
 
 describe TyrantManager do
-  include TempDirHelper
   before( :each ) do
     @tdir = File.join( temp_dir, 'tyrant' )
-    TyrantManager::Console.silent {
+    TyrantManager::Log.silent {
       @tyrant  = TyrantManager.setup( @tdir )
     }
   end
