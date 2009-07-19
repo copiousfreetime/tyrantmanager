@@ -16,12 +16,15 @@ class TyrantManager
 
     mode( :setup ) {
       option( :home ) do
-      description "The home directory of the tyrant manager"
-      argument :required
-      default TyrantManager.home_dir
+        description "The home directory of the tyrant manager"
+        argument :required
+        default TyrantManager.home_dir
       end
 
-      run { Cli.run_command_with_params( 'setup', params ) }
+      run { 
+        TyrantManager::Log.init 
+        TyrantManager.setup( params['home'].value ) 
+      }
     }
 
 
@@ -54,6 +57,7 @@ class TyrantManager
 
   def Cli.run_command_with_params( command, params )
     phash = Cli.params_to_hash( params )
+    TyrantManager::Log.init( phash )
     tm = TyrantManager.new( phash.delete('home') )
     tm.runner_for( phash ).run( command )
   end 

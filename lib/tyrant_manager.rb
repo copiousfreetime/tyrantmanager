@@ -3,6 +3,7 @@
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 
+require 'rubygems'
 require 'tyrant_manager/version'
 require 'tyrant_manager/paths'
 require 'tyrant_manager/log'
@@ -113,8 +114,10 @@ class TyrantManager
 
       %w[ instances log tmp ].each do |subdir|
         subdir = File.join( dir, subdir )
-        logger.info "Creating dirctory #{subdir}"
-        FileUtils.mkdir subdir
+        unless File.directory?( subdir ) then
+          logger.info "Creating directory #{subdir}"
+          FileUtils.mkdir subdir 
+        end
       end
     end
   end

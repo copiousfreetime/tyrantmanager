@@ -1,3 +1,4 @@
+require 'rbconfig'
 class TyrantManager
   module Paths
     # The installation directory of the project is considered to be the parent directory
