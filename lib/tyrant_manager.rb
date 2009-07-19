@@ -128,7 +128,7 @@ class TyrantManager
     if File.exist?( self.config_file ) then
       configuration # force a load
     else
-      raise Error, "#{home_dir} is not a valid archive"
+      raise Error, "#{home_dir} is not a valid archive. #{self.config_file} does not exist"
     end
   end
 
@@ -136,7 +136,7 @@ class TyrantManager
   # The configuration file for the manager
   #
   def config_file
-    @config_file ||= home_path( TyrantManager.config_file_basename )
+    @config_file ||= File.join( home_dir, TyrantManager.config_file_basename ) 
   end
 
   #

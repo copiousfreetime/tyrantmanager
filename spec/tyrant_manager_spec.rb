@@ -27,4 +27,13 @@ describe TyrantManager do
       TyrantManager.default_directory.should == @tdir
     end
   end
+
+  it "initializes with an existing directory" do
+    t = TyrantManager.new( @tdir )
+    t.config_file.should == File.join( @tdir, "config.rb" )
+  end
+
+  it "raises an error if attempting to initialize from a non-existent tyrnat home" do
+    lambda { TyrantManager.new( "/tmp" ) }.should raise_error( TyrantManager::Error, /\/tmp is not a valid archive/ )
+  end
 end
