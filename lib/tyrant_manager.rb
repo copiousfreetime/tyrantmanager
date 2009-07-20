@@ -94,6 +94,19 @@ class TyrantManager
       return dd
     end
 
+    #
+    # Return the default directory if it exists, otherwise fallback to .home_dir
+    #
+    def default_or_home_directory
+      hd = TyrantManager.home_dir
+      begin
+        hd = TyrantManager.default_directory
+      rescue => e
+        # yup, using home
+      end
+      return hd
+    end
+
 
     #
     # Setup the tyrant manager in the given directory.  This means creating it

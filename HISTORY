@@ -1,4 +1,8 @@
 = Changelog
-== Version 0.0.1
+== Version 1.0.1
+
+* fix default home directory in cli
+
+== Version 1.0.0
 
 * Initial public release

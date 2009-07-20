@@ -18,7 +18,7 @@ class TyrantManager
       argument( :home ) {
         description "The home directory of the tyrant manager"
         required
-        default TyrantManager.home_dir
+        default TyrantManager.default_or_home_directory
       }
 
       run { 
@@ -101,7 +101,7 @@ class TyrantManager
         description "The home directory of the tyrant manager"
         argument :required
         validate { |v| ::File.directory?( v ) }
-        default TyrantManager.home_dir
+        default TyrantManager.default_or_home_directory
       end
     end
 
