@@ -9,7 +9,6 @@ class TyrantManager
     def initialize( manager, opts = {} )
       @manager = manager
       @options = opts
-      logger.debug "Runner for manager #{manager.home_dir} with options #{opts.inspect} created."
     end
 
     def logger
@@ -17,7 +16,7 @@ class TyrantManager
     end
 
     def run( command_name )
-      cmd = Command.find( command_name ).new( options )
+      cmd = Command.find( command_name ).new( self.manager, self.options )
       begin
         cmd.before
         cmd.run

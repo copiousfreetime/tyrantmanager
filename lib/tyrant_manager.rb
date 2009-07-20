@@ -4,6 +4,7 @@
 #++
 
 require 'rubygems'
+require 'loquacious'
 require 'tyrant_manager/version'
 require 'tyrant_manager/paths'
 require 'tyrant_manager/log'
@@ -119,6 +120,7 @@ class TyrantManager
           FileUtils.mkdir subdir 
         end
       end
+      return TyrantManager.new( dir )
     end
   end
 
@@ -146,7 +148,11 @@ class TyrantManager
   # load the configuration
   #
   def configuration
-    @configuration ||= eval( IO.read( config_file ) )
+    unless @configuration 
+      eval( IO.read( self.config_file ) )
+      @configuration = Loquacious::Configuration.for("manager")
+    end
+    return @configuration
   end
 
   #
@@ -158,4 +164,5 @@ class TyrantManager
 end
 
 require 'tyrant_manager/cli'
-#require 'tyrant_manager/tyrant_instance'
+require 'tyrant_manager/runner'
+require 'tyrant_manager/tyrant_instance'

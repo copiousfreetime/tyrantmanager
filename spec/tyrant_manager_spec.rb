@@ -35,4 +35,17 @@ describe TyrantManager do
   it "raises an error if attempting to initialize from a non-existent tyrnat home" do
     lambda { TyrantManager.new( "/tmp" ) }.should raise_error( TyrantManager::Error, /\/tmp is not a valid archive/ )
   end
+
+  it "#config_file" do
+    @tyrant.config_file.should == File.join( @tdir, "config.rb" )
+    File.exist?( @tyrant.config_file ).should == true
+  end
+
+  it "#configuration" do
+    @tyrant.configuration.should_not == nil
+  end
+
+  it "has the location of the ttserver command" do
+    @tyrant.configuration.ttserver.should == "ttserver"
+  end
 end

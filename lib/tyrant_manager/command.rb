@@ -23,11 +23,14 @@ class TyrantManager
       name.split("::").last.downcase
     end
 
+    attr_reader :options
+    attr_reader :manager
+
     # 
     # Instantiated and given the tyrant manager instance it is to operate
     # through and a hash of options
     #
-    def instantiate( manager, opt = {} )
+    def initialize( manager, opts = {} )
       @manager = manager
       @options = opts
     end
@@ -84,7 +87,7 @@ class TyrantManager
     #------------------------------------------------------------------ 
     # registration
     #------------------------------------------------------------------ 
-    class CommandNotFoundError < TyrantManager::Error ; end
+    class CommandNotFoundError < ::TyrantManager::Error ; end
     class << Command
       def inherited( klass )
         return unless klass.instance_of? Class
@@ -107,3 +110,4 @@ class TyrantManager
     end
   end
 end
+require 'tyrant_manager/commands/create_instance'

@@ -1,6 +1,14 @@
+require 'rubygems'
 require 'loquacious'
 
 Loquacious::Configuration.for( "manager" ) do
+
+  desc <<-txt
+  The 'ttserver' command.  This will use the first one found in path by default
+  or you may explicitly set it here.
+  txt
+  ttserver "ttserver"
+
   desc <<-txt
   The top directory of the manager directory.  This is set with the 
   --directory option or it can be set here"
@@ -45,22 +53,22 @@ Loquacious::Configuration.for( "manager" ) do
     desc <<-txt
     Forbidden protocol commands, this is the list of commands that will be denied to the client.
     The full list is:
-      put putkeep putcat putshl putnr out get mget vsize iterinit iternext fwmkeys addint
-      adddouble ext sync optimize vanish copy restore setmst rnum size stat misc repl slave
+    |  put putkeep putcat putshl putnr out get mget vsize iterinit iternext fwmkeys addint
+    |  adddouble ext sync optimize vanish copy restore setmst rnum size stat misc repl slave
 
     There are meta lists too:
 
-      all       : all commands
-      allorg    : all tyrant binary protocol commands
-      allmc     : all memecached protocol commands
-      allhttp   : all http commands
-      allread   : get mget vsiz iterinit iternext fwmkeys rnum size stat
-      allwrite  : put putkeep putcat putshl putnr out addint adddouble vanish misc
-      allmanage : sync optimize copy restore setmst
+    |  all       : all commands
+    |  allorg    : all tyrant binary protocol commands
+    |  allmc     : all memecached protocol commands
+    |  allhttp   : all http commands
+    |  allread   : get mget vsiz iterinit iternext fwmkeys rnum size stat
+    |  allwrite  : put putkeep putcat putshl putnr out addint adddouble vanish misc
+    |  allmanage : sync optimize copy restore setmst
 
     To deny optimize vanish and slave commands the configuration would be:
       
-      deny_commands [ 'vanish', 'slave', 'optimizie' ]
+    |  deny_commands [ 'vanish', 'slave', 'optimizie' ]
 
     txt
     deny_commands nil
@@ -72,12 +80,15 @@ Loquacious::Configuration.for( "manager" ) do
     Leave this as nil to use the defaults.  To only allow the read and write commands and no
     others the configuration would be:
 
-      allow_commands [ 'allread', 'allwrite' ]
+    |  allow_commands [ 'allread', 'allwrite' ]
 
     txt
     allow_commands nil
     
   }
+end
 
-
+if $0 == __FILE__ then
+  help = Loquacious::Configuration.help_for("manager", :colorize => true)
+  help.show( :values => true )
 end

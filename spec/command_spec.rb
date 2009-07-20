@@ -6,7 +6,7 @@ class Junk < TyrantManager::Command; end
 
 describe TyrantManager::Command do
   before( :each ) do
-    @cmd = TyrantManager::Command.new
+    @cmd = TyrantManager::Command.new( nil )
   end
 
   it "has a command name" do
@@ -30,7 +30,7 @@ describe TyrantManager::Command do
   end
 
   it "classes cannot be run without implementing 'run'" do
-    j = Junk.new
+    j = Junk.new( nil )
     j.respond_to?(:run).should == true
     lambda { j.run }.should raise_error( NotImplementedError, /The #run method must be implemented/)
   end
