@@ -6,7 +6,7 @@ class TyrantManager
       manager.each_instance do |instance|
         ilist = options['instances']
         if ilist  == %w[ all ] or ilist.include?( instance.name ) then
-          puts "#{"%20s" % instance.name} : #{instance.home_dir}"
+          puts "#{"%20s" % instance.name} : port #{instance.configuration.port} : #{instance.home_dir}"
         end
       end
     end
