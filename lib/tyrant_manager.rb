@@ -212,8 +212,8 @@ class TyrantManager
   end
 
   def each_instance
-    instances.each_pair do |name, inst|
-      yield inst
+    instances.keys.sort.each do |name|
+      yield instances[name]
     end
   end
 
