@@ -50,7 +50,7 @@ class TyrantManager
       description "Start all the tyrants listed"
       mixin :option_home
       mixin :option_log_level
-      mixin :argument_instance_list
+      mixin :argument_instances
 
       run { Cli.run_command_with_params( 'start', params ) }
     }
@@ -60,27 +60,38 @@ class TyrantManager
       description "Stop all the tyrants listed"
       mixin :option_home
       mixin :option_log_level
-      mixin :argument_instance_list
+      mixin :argument_instances
 
       run { Cli.run_command_with_params( 'stop', params ) }
     }
 
 
     mode('status') {
-      description "Check the status of all the tyrants listed"
+      description "Check the running status of all the tyrants listed"
       mixin :option_home
       mixin :option_log_level
 
-      mixin :argument_instance_list
+      mixin :argument_instances
 
       run { Cli.run_command_with_params( 'status', params ) }
     }
+
+    mode( 'stats' ) {
+      description "Dump the database statistics of each of the tyrants listed"
+      mixin :option_home
+      mixin :option_log_level
+
+      mixin :argument_instances
+
+      run { Cli.run_command_with_params( 'stats', params ) }
+    }
+
 
     mode('list') {
       description "list the instances and their home directories"
       mixin :option_home
       mixin :option_log_level
-      mixin :argument_instance_list
+      mixin :argument_instances
       run { Cli.run_command_with_params( 'list', params ) }
     }
 
@@ -102,12 +113,12 @@ class TyrantManager
       end
     end
 
-    mixin :argument_instance_list do
+    mixin :argument_instances do
       argument('instances') do
         description "A comman separated list of instance names the tyrant manager  knows about"
         argument :required
-        cast :array
-        default :all
+        cast :list
+        default 'all'
       end
     end
   }

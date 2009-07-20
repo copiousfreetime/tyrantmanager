@@ -111,3 +111,8 @@ class TyrantManager
   end
 end
 require 'tyrant_manager/commands/create_instance'
+require 'tyrant_manager/commands/start'
+require 'tyrant_manager/commands/stop'
+require 'tyrant_manager/commands/status'
+require 'tyrant_manager/commands/stats'
+require 'tyrant_manager/commands/list'

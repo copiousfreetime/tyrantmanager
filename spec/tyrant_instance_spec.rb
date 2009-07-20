@@ -18,6 +18,10 @@ describe TyrantManager::TyrantInstance  do
     FileUtils.rm_rf @tdir
   end
 
+  it "raises an exception if given an invalid directory on initialization" do
+    lambda { TyrantManager::TyrantInstance.new( "/tmp" ) }.should raise_error( TyrantManager::Error, /tmp is not a valid archive/ )
+  end
+
   it "#config_file" do
     @tyrant.config_file.should == File.join( @tdir, "instances", "test", "config.rb" )
     File.exist?( @tyrant.config_file ).should == true
@@ -47,6 +51,7 @@ describe TyrantManager::TyrantInstance  do
     @tyrant.data_dir.should == File.join( @tdir, "instances", "test", "data" )
   end
 
+
   describe "database types" do
     { 'memory-hash' => "*",
       'memory-tree' => "+",
@@ -72,7 +77,7 @@ describe TyrantManager::TyrantInstance  do
 
 
   it "#start_command" do
-    @tyrant.start_command.should == "foo"
+    @tyrant.start_command.should =~ /^ttserver/
   end
 
 end

@@ -137,6 +137,10 @@ class TyrantManager
     end
   end
 
+  def logger
+    Logging::Logger[self]
+  end
+
   #
   # The configuration file for the manager
   #
@@ -161,6 +165,58 @@ class TyrantManager
   def runner_for( options )
     Runner.new( self, options )
   end
+
+  #
+  # Return the list of instances that the manager knows about
+  #
+  def instances
+    unless @instances then
+      candidates = [ self.instances_path ]
+      if configuration.instances then
+        candidates = configuration.instances
+      end
+
+      @instances = {}
+      while not candidates.empty? do
+        candidate = candidates.pop
+        cpath = append_to_home_if_not_absolute( candidate )
+        begin
+          t = TyrantInstance.new( cpath )
+          t.manager = self
+          @instances[t.name] = t
+        rescue TyrantManager::Error => e
+          if File.directory?( cpath ) then
+            Dir.glob( "#{cpath}/*" ).each do |epath|
+              if File.directory?( epath ) then
+                candidates.push epath
+              end
+            end
+          end
+        end
+      end #while 
+    end
+    return @instances
+  end
+
+  def each_instance
+    instances.each_pair do |name, inst|
+      yield inst
+    end
+  end
+
+  private
+  #
+  # take the given path, and if it is not an absolute path append it 
+  # to the home directory of the instance.
+  def append_to_home_if_not_absolute( p )
+    path = Pathname.new( p )
+    unless path.absolute? then
+      path = Pathname.new( home_dir ) + path
+    end
+    return path.to_s
+  end
+
+
 end
 
 require 'tyrant_manager/cli'

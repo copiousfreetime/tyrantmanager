@@ -1,5 +1,5 @@
 require 'tyrant_manager'
-require 'rufus-tokyo'
+require 'rufus/tokyo/tyrant'
 require 'erb'
 
 class TyrantManager
@@ -92,6 +92,13 @@ class TyrantManager
     end
 
     #
+    # The pid of the service
+    #
+    def pid
+      Float( IO.read( pid_file ).strip ).to_i
+    end
+
+    #
     # The log file
     #
     def log_file
@@ -146,6 +153,21 @@ class TyrantManager
     end
 
     #
+    # The lua extension file
+    #
+    def lua_extension_file
+      @lua_extension_file ||= append_to_home_if_not_absolute( configuration.lua_extension_file )
+    end
+
+    #
+    # The replication timestamp file
+    #
+    def replication_timestamp_file
+      @replication_timestamp_file ||= append_to_home_if_not_absolute( configuration.replication_timestamp_file )
+    end
+
+
+    #
     # Start command
     #
     def start_command
@@ -163,6 +185,17 @@ class TyrantManager
       parts << "-dmn" if cascading_config( 'daemonize' )
       parts << "-pid #{pid_file}"
       parts << "-log #{log_file}"
+      if log_level = cascading_config( 'log_level' ) then
+        if log_level == "error" then
+          parts << "-le"
+        elsif log_level == "debug" then
+          parts << "-ld" 
+        elsif log_level == "info" then
+          # leave it at info
+        else
+          raise Error, "Invalid log level setting [#{log_level}]"
+        end
+      end
 
       parts << "-ulog #{ulog_dir}"
       if ulim = cascading_config( 'update_log_size' )then
@@ -173,11 +206,16 @@ class TyrantManager
       parts << "-sid #{configuration.server_id}"       if configuration.server_id
       parts << "-mhost #{configuration.master_server}" if configuration.master_server
       parts << "-mport #{configuration.master_port}"   if configuration.master_port
-      parts << "-rts #{configuration.replication_timestamp_file}" if configuration.replication_timestamp_file
-      parts << "-ext #{configuration.lua_extension_file}" if configuration.lua_extension_file
-      if pc = configuration.periodic_command then
-        if pc.name and pc.period then
-          parts << "-extpc #{pc.name} #{pc.period}"
+      parts << "-rts #{replication_timestamp_file}" if configuration.replication_timestamp_file
+
+      if configuration.lua_extension_file then
+        if File.exist?( lua_extension_file ) then
+          parts << "-ext #{lua_extension_file}" 
+          if pc = configuration.periodic_command then
+            if pc.name and pc.period then
+              parts << "-extpc #{pc.name} #{pc.period}"
+            end
+          end
         end
       end
 
@@ -192,7 +230,62 @@ class TyrantManager
       return parts.join( " " )  
     end
 
+    #
+    # Start the tyrant
+    #
+    def start
+      o = %x[ #{start_command} ]
+      logger.info o
+    end
 
+    # 
+    # kill the proc
+    #
+    def stop
+      begin
+        _pid = self.pid
+        Process.kill( "TERM" , _pid )
+        logger.info "Sent signal TERM to #{_pid}"
+      rescue Errno::EPERM
+        logger.info "Process #{_pid} is beyond my control"
+      rescue Errno::ESRCH
+        logger.info "Process #{_pid} is dead"
+      rescue => e
+        logger.error "Problem sending kill(TERM, #{_pid}) : #{e}"
+      end
+    end
+
+
+    #
+    # check if process is alive
+    #
+    def running?
+      begin
+        if File.exist?( self.pid_file ) then
+          _pid = self.pid
+          Process.kill( 0, _pid )
+          return true
+        else
+          return false
+        end
+      rescue Errno::EPERM
+        logger.info "Process #{_pid} is beyond my control"
+      rescue Errno::ESRCH
+        logger.info "Process #{_pid} is dead"
+        return false
+      rescue => e
+        logger.error "Problem sending kill(0, #{_pid}) : #{e}"
+      end
+    end
+
+    #
+    # return a network connection to this instance
+    #
+    def connection
+      Rufus::Tokyo::Tyrant.new( configuration.host, configuration.port.to_i )
+    end
+
+ 
     private
 
     #

@@ -6,11 +6,13 @@ describe TyrantManager do
   before( :each ) do
     @tdir = File.join( temp_dir, 'tyrant' )
     TyrantManager::Log.silent {
-      @tyrant  = TyrantManager.setup( @tdir )
+      @mgr  = TyrantManager.setup( @tdir )
     }
+    #TyrantManager::Log.level = :debug
   end
 
   after( :each ) do
+    #puts spec_log
     FileUtils.rm_rf @tdir
   end
 
@@ -37,15 +39,31 @@ describe TyrantManager do
   end
 
   it "#config_file" do
-    @tyrant.config_file.should == File.join( @tdir, "config.rb" )
-    File.exist?( @tyrant.config_file ).should == true
+    @mgr.config_file.should == File.join( @tdir, "config.rb" )
+    File.exist?( @mgr.config_file ).should == true
   end
 
   it "#configuration" do
-    @tyrant.configuration.should_not == nil
+    @mgr.configuration.should_not == nil
   end
 
   it "has the location of the ttserver command" do
-    @tyrant.configuration.ttserver.should == "ttserver"
+    @mgr.configuration.ttserver.should == "ttserver"
+  end
+
+  it "knows all its instances" do
+    3.times do |x|
+      idir   = @mgr.instances_path( "test#{x}" )
+      TyrantManager::TyrantInstance.setup( idir )
+    end
+
+    @mgr.instances.size.should == 3
+    names = []
+    @mgr.each_instance do |i|
+      i.name.should =~ /test\d/
+      names << i.name
+    end
+
+    names.sort.should == %w[ test0 test1 test2 ]
   end
 end

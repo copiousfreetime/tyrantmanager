@@ -60,7 +60,7 @@ Configuration.for("rubygem") {
 Configuration.for('test') {
   mode      "spec"
   files     Configuration.for("packaging").files.test
-  options   %w[ --format profile --color ]
+  options   %w[ --format specdoc --color ]
   ruby_opts %w[ ]
 }
 
