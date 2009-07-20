@@ -22,7 +22,7 @@ TyrantManager::GEM_SPEC = Gem::Specification.new do |spec|
   # add dependencies here
   # spec.add_dependency("rake", ">= 0.8.1")
   spec.add_dependency( "loquacious", "~> 1.3.0")
-  spec.add_dependency( "rufus-tokyo", "~> 0.1.14")
+  spec.add_dependency( "rufus-tokyo", "~> 0.1.15")
   
   spec.add_development_dependency("configuration", ">= 0.0.5")
   spec.add_development_dependency( "rake", "~> 0.8.3")
