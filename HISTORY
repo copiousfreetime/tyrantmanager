@@ -1,4 +1,8 @@
 = Changelog
+== Version 1.0.7
+
+* do not attempt to stop servers where there is no pid file
+
 == Version 1.0.6 
 
 * updates to list command
