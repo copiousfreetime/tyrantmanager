@@ -87,14 +87,6 @@ Configuration.for('rdoc') {
 }
 
 #-----------------------------------------------------------------------
-# Extensions
-#-----------------------------------------------------------------------
-Configuration.for('extension') {
-  configs   Configuration.for('packaging').files.ext.find_all { |x| 
-                %w[ mkrf_conf.rb extconf.rb ].include?( File.basename(x) ) 
-            }
-}
-#-----------------------------------------------------------------------
 # Rubyforge 
 #-----------------------------------------------------------------------
 Configuration.for('rubyforge') {
