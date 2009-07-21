@@ -51,6 +51,10 @@ class TyrantManager
       mixin :option_home
       mixin :option_log_level
       mixin :argument_instances
+      option( 'dry-run' ) {
+        description "Do not start, just show the commands"
+        default false
+      }
 
       run { Cli.run_command_with_params( 'start', params ) }
     }

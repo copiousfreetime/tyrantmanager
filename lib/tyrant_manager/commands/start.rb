@@ -5,9 +5,17 @@ class TyrantManager
       manager.each_instance do |instance|
         ilist = options['instances']
         if ilist  == %w[ all ] or ilist.include?( instance.name ) then
-          if not instance.running? then
-            logger.info "Starting #{instance.name} : #{instance.start_command}"
-            instance.start
+          parts = [ "Starting #{instance.name}" ]
+          parts << instance.start_command
+
+          if options['dry-run'] then
+            parts << "(dry-run)"
+            logger.info parts.join(" : ")
+
+          elsif not instance.running? then
+            logger.info parts.join(" : ")
+            instance.start 
+
           else
             logger.info "Instance #{instance.name} already running"
           end
