@@ -6,7 +6,16 @@ class TyrantManager
       manager.each_instance do |instance|
         ilist = options['instances']
         if ilist  == %w[ all ] or ilist.include?( instance.name ) then
-          puts "#{"%20s" % instance.name} : port #{instance.configuration.port} : #{instance.home_dir}"
+          parts = []
+          parts << ("%20s" % instance.name)
+          parts << "port #{instance.configuration.port}"
+          parts << instance.home_dir
+
+          if instance.configuration.master_server then
+            parts << "server id #{"%2d" % instance.configuration.server_id}"
+            parts << "replicating from #{instance.configuration.master_server}:#{instance.configuration.master_port}"
+          end
+          puts parts.join(" : ")
         end
       end
     end

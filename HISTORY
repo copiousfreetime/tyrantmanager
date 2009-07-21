@@ -1,4 +1,12 @@
 = Changelog
+== Version 1.0.6 
+
+* updates to list command
+
+== Version 1.0.4
+
+* fix db name on ttserver commandline, make sure opts/mode/etc are correct 
+
 == Version 1.0.1
 
 * fix default home directory in cli
