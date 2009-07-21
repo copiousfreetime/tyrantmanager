@@ -168,13 +168,21 @@ class TyrantManager
 
 
     #
-    # Start command
+    # Start command.
+    #
+    # This is a bit convoluted to bring together all the options and put them
+    # into one big commandline item.  
     #
     def start_command
+
+      ##-- ttserver executable
       parts = [ manager.configuration.ttserver ]
+
+      ##-- host and port
       parts << "-host #{configuration.host}" if configuration.host
       parts << "-port #{configuration.port}" if configuration.port
 
+      ##-- thread options
       if thnum = cascading_config( 'thread_count' ) then
         parts << "-thnum #{thnum}"
       end
@@ -182,8 +190,12 @@ class TyrantManager
         parts << "-tout #{tout}"
       end
 
+      ##-- daemoization and pid
       parts << "-dmn" if cascading_config( 'daemonize' )
       parts << "-pid #{pid_file}"
+
+
+      ##-- logging
       parts << "-log #{log_file}"
       if log_level = cascading_config( 'log_level' ) then
         if log_level == "error" then
@@ -197,17 +209,20 @@ class TyrantManager
         end
       end
 
+      ##-- update logs
       parts << "-ulog #{ulog_dir}"
       if ulim = cascading_config( 'update_log_size' )then
         parts << "-ulim #{ulim}"
       end
       parts << "-uas" if cascading_config( 'update_log_async' )
 
+      ##-- replication items, server id, master, replication timestamp file
       parts << "-sid #{configuration.server_id}"       if configuration.server_id
       parts << "-mhost #{configuration.master_server}" if configuration.master_server
       parts << "-mport #{configuration.master_port}"   if configuration.master_port
       parts << "-rts #{replication_timestamp_file}" if configuration.replication_timestamp_file
 
+      ##-- lua extension
       if configuration.lua_extension_file then
         if File.exist?( lua_extension_file ) then
           parts << "-ext #{lua_extension_file}" 
@@ -219,14 +234,29 @@ class TyrantManager
         end
       end
 
+      ##-- command permissiosn
       if deny = cascading_config( "deny_commands" ) then
         parts << "-mask #{deny.join(",")}"
       end
 
       if allow = cascading_config( "allow_commands" ) then
-        parts << "-mask #{allow.join(",")}"
+        parts << "-unmask #{allow.join(",")}"
       end
-      parts << db_file
+
+      ##-- now for the filename.  The format is
+      #  filename.ext#opts=ld#mode=wc#tuning_param=value#tuning_param=value...
+      #
+      file_pairs = []
+      file_pairs << "opts=#{configuration.opts}"
+      file_pairs << "mode=#{configuration.mode}"
+      Loquacious::Configuration::Iterator.new( configuration.tuning_params ).each do |node|
+        file_pairs << "#{node.name}=#{node.obj}" if node.obj
+      end
+
+      file_name_and_params = "#{db_file}##{file_pairs.join("#")}"
+
+      parts << file_name_and_params
+
       return parts.join( " " )  
     end
 
