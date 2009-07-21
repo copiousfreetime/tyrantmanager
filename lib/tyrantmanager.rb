@@ -1,1 +1,2 @@
-require 'tyrant_manager"
+require 'tyrant_manager'
+
