@@ -1,4 +1,8 @@
 = Changelog
+== Version 1.0.9
+
+* start the instance in the context of its home directory
+
 == Version 1.0.7
 
 * do not attempt to stop servers where there is no pid file

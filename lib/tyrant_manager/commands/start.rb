@@ -14,8 +14,9 @@ class TyrantManager
 
           elsif not instance.running? then
             logger.info parts.join(" : ")
-            instance.start 
-
+            Dir.chdir( instance.home_dir ) do
+              instance.start 
+            end
           else
             logger.info "Instance #{instance.name} already running"
           end

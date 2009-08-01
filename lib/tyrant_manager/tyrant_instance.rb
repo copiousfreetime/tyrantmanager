@@ -264,7 +264,7 @@ class TyrantManager
     # Start the tyrant
     #
     def start
-      o = %x[ #{start_command} ]
+      o = %x[ sh #{start_command} ]
       logger.info o
     end
 
