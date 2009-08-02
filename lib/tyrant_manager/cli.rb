@@ -15,6 +15,7 @@ class TyrantManager
     run { help! }
 
     mode( :setup ) {
+      description "Setup an tyrant manager location"
       argument( :home ) {
         description "The home directory of the tyrant manager"
         required
