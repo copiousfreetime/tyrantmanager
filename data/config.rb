@@ -38,7 +38,7 @@ Loquacious::Configuration.for( "manager" ) do
     desc "The level of logging, this can be 'debug', 'info', or 'error'"
     log_level "error"
 
-    desc "Run daemoized"
+    desc "Run daemonized"
     daemonize true
 
     desc <<-txt
