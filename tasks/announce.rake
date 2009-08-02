@@ -16,16 +16,20 @@ namespace :announce do
       mail.puts "Subject: [ANN] #{info[:subject]}"
       mail.puts
       mail.puts info[:title]
-      mail.puts
-      mail.puts "  gem install #{TyrantManager::GEM_SPEC.name}"
-      mail.puts
-      mail.puts info[:urls]
-      mail.puts 
-      mail.puts info[:description]
       mail.puts 
       mail.puts "{{ Release notes for Version #{TyrantManager::VERSION} }}"
       mail.puts 
       mail.puts info[:release_notes]
+      mail.puts
+      mail.puts "  #{info[:urls]}"
+      mail.puts
+      mail.puts "=== Installation"
+      mail.puts
+      mail.puts "  gem install #{TyrantManager::GEM_SPEC.name}"
+      mail.puts
+      mail.puts "=== Description"
+      mail.puts
+      mail.puts info[:description]
       mail.puts
     end 
     puts "Created the following as email.txt:"

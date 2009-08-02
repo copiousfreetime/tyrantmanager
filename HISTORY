@@ -1,5 +1,9 @@
 = Changelog
-== Version 1.0.9
+== Version 1.0.9 2009-08-01
+
+* First public versioned release
+
+== Version 1.0.8
 
 * start the instance in the context of its home directory
 
@@ -21,4 +25,4 @@
 
 == Version 1.0.0
 
-* Initial public release
+* Initial release

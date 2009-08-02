@@ -11,7 +11,7 @@ Configuration.for('project') {
   version       TyrantManager::VERSION
   author        "Jeremy Hinegardner"
   email         "jeremy@copiousfreetime.org"
-  homepage      "http://copiousfreetime.rubyforge.org/tyrantmanager"
+  homepage      "http://copiousfreetime.rubyforge.org/tyrantmanager/"
   description   Utils.section_of("README", "description")
   summary       description.split(".").first
   history       "HISTORY"
@@ -93,7 +93,7 @@ Configuration.for('rubyforge') {
   project       "copiousfreetime"
   user          "jjh"
   host          "rubyforge.org"
-  rdoc_location "#{user}@#{host}:/var/www/gforge-projects/#{project}"
+  rdoc_location "#{user}@#{host}:/var/www/gforge-projects/#{project}/tyrantmanager/"
 }
 
 
