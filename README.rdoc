@@ -16,7 +16,10 @@
 
 == DESCRIPTION
 
-A command line tool for managing Tokyo Tyrant instances.
+A command line tool for managing Tokyo Tyrant instances.  It allows for the
+creation, starting, stopping, listing, stating of many tokyo tyrant instances
+all on the same machine.  The commands can be applied to a single or multiple
+instances. 
 
 === Setup a manager home
 
