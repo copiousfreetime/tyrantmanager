@@ -3,17 +3,257 @@
 * Homepage[http://copiousfreetime.rubyforge.org/tokyo-manager]
 * {Rubyforge project}[http://rubyforge.org/projects/copiousfreetime/]
 * email jeremy at copiousfreetime dot org
-* git clone url git://github.com/copiousfreetime/tokyo-manager.git
+* git clone git://github.com/copiousfreetime/tokyo-manager.git
 
-== DESCRIPTION
+== INSTALLATION
 
-Provide a manager of tyrants.
-
-== FEATURES
+  sudo gem install tyrantmanager
 
 == SYNOPSIS
 
+  tyrantmanager (setup|create-instance|start|stop|status|stats|list) [options]+
+
+== DESCRIPTION
+
+A command line tool for managing Tokyo Tyrant instances.
+
+=== Setup a manager home
+
+After installing the gem, you need to setup a tyrant manager home, all the
+tyrant instances are initially relative to this location.
+
+  jeremy@playground:~ % tyrantmanager setup /tmp/tyrant
+  00:09:06  INFO : Creating directory /tmp/tyrant
+  00:09:06  INFO : Creating default config file /tmp/tyrant/config.rb
+  00:09:06  INFO : Creating directory /tmp/tyrant/instances
+  00:09:06  INFO : Creating directory /tmp/tyrant/log
+  00:09:06  INFO : Creating directory /tmp/tyrant/tmp
+
+Once the manager home is setup, all other commands need to know about it. 
+This can be achieved in 3 ways.
+
+* use the --home option on all commands
+* set the TYRANT_MANAGER_HOME environment variable
+* execute the commands when the current working directory is the tyrant home. 
+
+=== Creating a new tyrant instance
+
+Each instances is separate, yet initially relative to to the tyrant manager's
+home. 
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager create-instance foo
+    00:17:55  INFO : Creating instance directory /tmp/tyrant/instances/foo
+    00:17:55  INFO : Creating directory /tmp/tyrant/instances/foo
+    00:17:55  INFO : Creating default config file /tmp/tyrant/instances/foo/config.rb
+    00:17:55  INFO : Creating directory /tmp/tyrant/instances/foo/ulog
+    00:17:55  INFO : Creating directory /tmp/tyrant/instances/foo/data
+    00:17:55  INFO : Creating directory /tmp/tyrant/instances/foo/lua
+    00:17:55  INFO : Creating directory /tmp/tyrant/instances/foo/log
+
+This creates a new tyrant instance in the instances directory.  There are
+several subdirectories created for you automatically.  
+
+* data - the actual data file location
+* ulog - where the update logs are kept
+* log  - the server logs
+* lua  - default location for lua code
+
+=== Configuring an instance
+
+Configuration of a Tyrant instances is in the 'config.rb' file in the instances
+home directory.  This all the configuration items that are specific to that
+instance.   Take a look through the file, or just execute it to see a nicely
+formatted output of all the current configuration parameters, descriptions,
+and current values.  This example just highlights a few of the options.
+
+    jeremy@playground:/tmp/tyrant/instances/foo % ruby config.rb 
+    The directory holding the database file.  By default this is relative
+    to the instance directory.  If you want to put it somewhere else, then
+    put the full path here.
+      - data_dir                   => "data"
+
+    The hostname this instance will listen on. The default is all
+      - host                       => "0.0.0.0"
+
+    [...]
+
+    Mode of the server in relation to the database.  It can be a combination of 
+    the following:
+         w - it is a database writer
+         r - it is a database reader
+         c - it creates the database if it does not exist
+         t - it truncates the database if it does exist
+         e - do not lock the database when doing operations
+         f - use a non-blocking lock when doing operations
+      - mode                       => "wc"
+
+    The options for data stored in the database.  They include one of the 
+    compression options:
+         d - Deflate
+         b - BZIP2
+         t - TCBS 
+     and 
+         l - allow the database to be larger than 2GB
+      - opts                       => "ld"
+
+    [...]
+    
+    The type of database this instance will be.  Options are:
+         memory-hash - an in memory hash database
+         memory-tree - an in memory B+ tree database
+         hash        - an on disk hash database
+         tree        - an on disk B+ tree database
+         fixed       - an on disk fixed length database
+         table       - an on disk table database
+      - type                       => "hash"
+
+There are also configuration items in the 'config.rb' in the Manager's home
+directory.  These are global defaults for all instances the manager knows about,
+and may be overridden in the instance's 'config.rb' file.  Again, just execute
+the configuration file to see all the options, their current set values and 
+the documentation.
+
+    jeremy@playground:/tmp/tyrant % ruby config.rb 
+    The top directory of the manager directory.  This is set with the 
+    --directory option or it can be set here"
+      - home                               => nil
+
+    Default settings for tyrant instances.  If a tyrant does not explicitly set one of 
+    these configurations then the default listed here is used.  This does not list all
+    of the configuration variables, only those that make sense to have defaults for.
+      - instance_defaults
+
+    [...]   
+
+     Run daemonized
+      - instance_defaults.daemonize        => true
+
+    [...]
+    
+    The list of locations that contain Tyrant instances.  Each element in this array
+    either a directory containing instance directories, or an instance directory itself.
+    Tyrant Manager will figure out what the case is.  If this is unset, then the default
+    'instances' directory below the manager's home directory is used.
+      - instances                          => nil
+
+    The 'ttserver' command.  This will use the first one found in path by default
+    or you may explicitly set it here.
+      - ttserver                           => "ttserver"
+
+There are a considerable number of configuration options for Tokyo Tyrant and I've done
+my best to document all of them.
+
+If you do have more than one instance on a single machine, you'll need to make sure 
+to change the port option, otherwise only one instance will run.
+
+    desc "The port this tyrant will listen on.  The default is 1978"
+    port 1978
+
+=== Listing, Controlling instances and Seeing their status
+
+Instances may be started and stopped all at once, or individually.  On startup, 
+the ttserver command line that was used is output.  
+
+==== List known instances
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager list
+                 bar : port 1979 : /tmp/tyrant/instances/bar
+                 baz : port 1980 : /tmp/tyrant/instances/baz
+                 foo : port 1978 : /tmp/tyrant/instances/foo
+
+==== Start all
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager start
+    00:51:15  INFO : Starting bar : ttserver -host 0.0.0.0 -port 1979 -thnum 8 -tout 15 -dmn -pid /tmp/tyrant/instances/bar/bar.pid -log /tmp/tyrant/instances/bar/log/bar.log -le -ulog /tmp/tyrant/instances/bar/ulog -ulim 1g -rts /tmp/tyrant/instances/bar/bar.rts /tmp/tyrant/instances/bar/data/bar.tch#opts=ld#mode=wc
+    00:51:15  INFO : 
+    00:51:15  INFO : Starting baz : ttserver -host 0.0.0.0 -port 1980 -thnum 8 -tout 15 -dmn -pid /tmp/tyrant/instances/baz/baz.pid -log /tmp/tyrant/instances/baz/log/baz.log -le -ulog /tmp/tyrant/instances/baz/ulog -ulim 1g -rts /tmp/tyrant/instances/baz/baz.rts /tmp/tyrant/instances/baz/data/baz.tch#opts=ld#mode=wc
+    00:51:15  INFO : 
+    00:51:15  INFO : Starting foo : ttserver -host 0.0.0.0 -port 1978 -thnum 8 -tout 15 -dmn -pid /tmp/tyrant/instances/foo/foo.pid -log /tmp/tyrant/instances/foo/log/foo.log -le -ulog /tmp/tyrant/instances/foo/ulog -ulim 1g -rts /tmp/tyrant/instances/foo/foo.rts /tmp/tyrant/instances/foo/data/foo.tch#opts=ld#mode=wc
+    00:51:15  INFO : 
+
+As you can see the commandline used to start the tyrant server is output.
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager status
+    00:52:17  INFO : bar is running as pid 28658
+    00:52:17  INFO : baz is running as pid 28670
+    00:52:17  INFO : foo is running as pid 28682
+
+==== Stop all 
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager stop all
+    00:52:40  INFO : Stopping bar : pid 28658
+    00:52:40  INFO : Sent signal TERM to 28658
+    00:52:40  INFO : Stopping baz : pid 28670
+    00:52:40  INFO : Sent signal TERM to 28670
+    00:52:40  INFO : Stopping foo : pid 28682
+    00:52:40  INFO : Sent signal TERM to 28682
+
+And see that they are all done
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager status
+    00:53:15  INFO : bar is not running, or its pid file is gone
+    00:53:15  INFO : baz is not running, or its pid file is gone
+    00:53:15  INFO : foo is not running, or its pid file is gone
+
+==== Start just foo and baz
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager start foo,baz
+    00:53:54  INFO : Starting baz : ttserver -host 0.0.0.0 -port 1980 -thnum 8 -tout 15 -dmn -pid /tmp/tyrant/instances/baz/baz.pid -log /tmp/tyrant/instances/baz/log/baz.log -le -ulog /tmp/tyrant/instances/baz/ulog -ulim 1g -rts /tmp/tyrant/instances/baz/baz.rts /tmp/tyrant/instances/baz/data/baz.tch#opts=ld#mode=wc
+    00:53:54  INFO : 
+    00:53:54  INFO : Starting foo : ttserver -host 0.0.0.0 -port 1978 -thnum 8 -tout 15 -dmn -pid /tmp/tyrant/instances/foo/foo.pid -log /tmp/tyrant/instances/foo/log/foo.log -le -ulog /tmp/tyrant/instances/foo/ulog -ulim 1g -rts /tmp/tyrant/instances/foo/foo.rts /tmp/tyrant/instances/foo/data/foo.tch#opts=ld#mode=wc
+    00:53:54  INFO : 
+
+Foo and baz are started, bar is still stopped
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager status
+    00:54:38  INFO : bar is not running, or its pid file is gone
+    00:54:38  INFO : baz is running as pid 28708
+    00:54:38  INFO : foo is running as pid 28720
+
+=== Stop just foo
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager stop foo
+    00:55:33  INFO : Stopping foo : pid 28720
+    00:55:33  INFO : Sent signal TERM to 28720
+
+And baz is still running
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager status
+    00:55:51  INFO : bar is not running, or its pid file is gone
+    00:55:51  INFO : baz is running as pid 28708
+    00:55:51  INFO : foo is not running, or its pid file is gone
+
+=== Look at the server statistics
+
+You can also look at the server statistics of each running instance
+
+    jeremy@playground:/tmp/tyrant % tyrantmanager stats
+    Instance bar at /tmp/tyrant/instances/bar
+        bigend.... 0
+        fd........ 7
+        libver.... 312
+        loadavg... 0.030000
+        memrss.... 1003520
+        memsize... 173633536
+        os........ Linux
+        path...... /tmp/tyrant/instances/bar/data/bar.tch
+        pid....... 28749
+        protver... 0.91
+        rnum...... 0
+        ru_real... 14.560829
+        ru_sys.... 0.000000
+        ru_user... 0.004000
+        sid....... 72615862
+        size...... 1052992
+        time...... 1249174632.207222
+        type...... hash
+        version... 1.1.29
+    [...]
+
 == CREDITS
+
+* Inspired by the {Light Cloud}[http://opensource.plurk.com/LightCloud/Tyrant_manager/} tyrant manager
+* {Tokyo Tyrant}[http://tokyocabinet.sourceforge.net/tyrantdoc/]
 
 == LICENSE
 
