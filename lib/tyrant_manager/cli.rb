@@ -70,15 +70,22 @@ class TyrantManager
       run { Cli.run_command_with_params( 'stop', params ) }
     }
 
+    mode('replication-status') {
+      description "Describe the replication status of those servers using replication"
+      mixin :option_home
+      mixin :option_log_level
+      mixin :argument_instances
+      run { Cli.run_command_with_params( 'replication-status', params ) }
+    }
 
-    mode('status') {
+    mode('process-status') {
       description "Check the running status of all the tyrants listed"
       mixin :option_home
       mixin :option_log_level
 
       mixin :argument_instances
 
-      run { Cli.run_command_with_params( 'status', params ) }
+      run { Cli.run_command_with_params( 'process-status', params ) }
     }
 
     mode( 'stats' ) {

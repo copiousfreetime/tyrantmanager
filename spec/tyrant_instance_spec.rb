@@ -51,6 +51,29 @@ describe TyrantManager::TyrantInstance  do
     @tyrant.data_dir.should == File.join( @tdir, "instances", "test", "data" )
   end
 
+  describe "against running instances" do
+    before( :each ) do
+      @tyrant.start
+      start = Time.now
+      loop do
+        break if @tyrant.running?
+        sleep 0.1
+        break if (Time.now - start) > 2
+      end
+    end
+
+    after( :each ) do
+      @tyrant.stop
+    end
+
+    it "#is_slave?" do
+      @tyrant.running?.should == true
+      @tyrant.should_not be_is_slave
+      @tyrant.stop
+    end
+
+  end
+
 
   describe "database types" do
     { 'memory-hash' => "*",

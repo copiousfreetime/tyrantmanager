@@ -309,10 +309,43 @@ class TyrantManager
     end
 
     #
+    # return the stats for this instance
+    #
+    def stat
+      connection.stat
+    end
+
+    #
     # return a network connection to this instance
     #
     def connection
+      host = configuration.host
+
+      # you cannot connect to 0.0.0.0
+      if host == "0.0.0.0" then
+        host = "localhost"
+      end
       Rufus::Tokyo::Tyrant.new( configuration.host, configuration.port.to_i )
+    end
+
+    #
+    # Is this instance a slave of another server?  This means it could be in a
+    # master-slave or master-master relationship
+    #
+    def is_slave?
+      s = connection.stat
+      return (s['mhost'] and s['mport'])
+    end
+
+    #
+    # return a network connection to the master server of this instance
+    #
+    def master_connection
+      if is_slave? then
+        s = self.stat
+        return Rufus::Tokyo::Tyrant.new( s['mhost'], s['mport'].to_i )
+      end
+      return nil
     end
 
  

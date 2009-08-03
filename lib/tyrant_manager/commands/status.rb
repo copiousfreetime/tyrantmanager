@@ -4,7 +4,11 @@ class TyrantManager
     #
     # Report the status of one ore more tyrant intances
     #
-    class Status < Command
+    class ProcessStatus < Command
+      def self.command_name
+        'process-status'
+      end
+
       def run
         manager.each_instance do |instance|
           ilist = options['instances']
