@@ -17,17 +17,31 @@ class TyrantManager
           if ilist  == %w[ all ] or ilist.include?( instance.name ) then
             if instance.running? and instance.is_slave? then
               s_stat = instance.stat
-              logger.info "#{instance.name} is replicating from master at #{s_stat['mhost']}:#{s_stat['mport']}"
+              logger.info "#{instance.name} is replicating from #{s_stat['mhost']}:#{s_stat['mport']}"
               if m_conn = validate_master_connection( instance ) then
                 if validate_master_master( instance.connection, m_conn ) then
                   m_stat = m_conn.stat
-                  m_name = "master #{s_stat['mhost']}:#{s_stat['mport']}"
-                  n_width = [ m_name.length, instance.name.length ].max
+                  m_name = "#{s_stat['mhost']}:#{s_stat['mport']}"
 
-                  logger.info "  #{instance.name.rjust(n_width)} : records => #{s_stat['rnum']}, delay => #{s_stat['delay']} seconds"
-                  logger.info "  #{m_name.rjust(n_width)} : records => #{m_stat['rnum']}, delay => #{m_stat['delay']} seconds"
+                  primary, failover = instance.connection, m_conn
+
+                  if m_stat['delay'] > s_stat['delay'] then
+                    primary, failover = m_conn, instance.connection
+                  end
+
+                  p_stat = primary.stat
+                  p_name = "#{ip_of( primary.host )}:#{primary.port}"
+
+                  f_stat = failover.stat
+                  f_name = "#{ip_of( failover.host )}:#{failover.port}"
+
+                  n_width = [ p_name.length, f_name.length ].max
+
+                  logger.info "  Primary master  : #{p_name} -> #{p_stat['rnum']} records, primary since #{(Time.now - ( Float(primary.stat['delay']))).strftime("%Y-%m-%d %H:%M:%S")}"
+                  logger.info "  Failover master : #{f_name} -> #{f_stat['rnum']} records, last replicated #{failover.stat['delay']} seconds ago"
                 end
               end
+              logger.info ""
             end
           end
         end
@@ -40,15 +54,17 @@ class TyrantManager
         s_stat = slave.stat
 
         if ( m_stat['mhost'] and m_stat['mport'] ) then
-          logger.info "  master is replicating from #{m_stat['mhost']}:#{m_stat['mport']}"
+          logger.info "  #{s_stat['mhost']}:#{s_stat['mport']} is replicating from #{m_stat['mhost']}:#{m_stat['mport']}"
           mm_ip = ip_of( m_stat['mhost'] )
           s_ip = ip_of( slave.host )
           if ( s_ip == mm_ip ) and ( slave.port == m_stat['mport'].to_i ) then
-            logger.info "  This is a good master-master relationship"
+            #logger.info "    - this is a good master-master relationship"
+            return true 
           else
             logger.error "  Unsupported replication configuration!!!"
             logger.error "  (original hostnames) #{slave.host}:#{slave.port} -> #{(master.host)}:#{master.port} -> #{m_stat['mhost']}:#{m_stat['mport']}"
             logger.error "  (hostnames resolved) #{s_ip}:#{slave.port} -> #{ip_of(master.host)}:#{master.port} -> #{ip_of(m_stat['mhost'])}:#{m_stat['mport']}"
+            return false
           end
         end
       end
