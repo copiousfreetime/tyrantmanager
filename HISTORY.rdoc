@@ -1,4 +1,10 @@
 = Changelog
+== Version 1.1.0 2009-08-10
+
+* change 'status' command to 'process-status'
+* add 'replication-status' command
+* fix gem dependencies
+
 == Version 1.0.9 2009-08-01
 
 * First public versioned release
