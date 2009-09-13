@@ -219,6 +219,9 @@ Loquacious::Configuration.for( "<%= instance_name %>" ) do
   The name of a file to load as a lua extension.  By default this 
   is relative to the root of the instance directory.  This file will
   only be loaded if it exists.
+
+  If this is set to a value and the file does not exist, a WARN message
+  is printed to the log.
   txt
   lua_extension_file "lua/<%= instance_name %>.lua"
 

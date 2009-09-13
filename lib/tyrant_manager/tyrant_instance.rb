@@ -174,90 +174,95 @@ class TyrantManager
     # into one big commandline item.  
     #
     def start_command
+      unless @start_command then
+        ##-- ttserver executable
+        parts = [ manager.configuration.ttserver ]
 
-      ##-- ttserver executable
-      parts = [ manager.configuration.ttserver ]
+        ##-- host and port
+        parts << "-host #{configuration.host}" if configuration.host
+        parts << "-port #{configuration.port}" if configuration.port
 
-      ##-- host and port
-      parts << "-host #{configuration.host}" if configuration.host
-      parts << "-port #{configuration.port}" if configuration.port
-
-      ##-- thread options
-      if thnum = cascading_config( 'thread_count' ) then
-        parts << "-thnum #{thnum}"
-      end
-      if tout = cascading_config( 'session_timeout' ) then
-        parts << "-tout #{tout}"
-      end
-
-      ##-- daemoization and pid
-      parts << "-dmn" if cascading_config( 'daemonize' )
-      parts << "-pid #{pid_file}"
-
-
-      ##-- logging
-      parts << "-log #{log_file}"
-      if log_level = cascading_config( 'log_level' ) then
-        if log_level == "error" then
-          parts << "-le"
-        elsif log_level == "debug" then
-          parts << "-ld" 
-        elsif log_level == "info" then
-          # leave it at info
-        else
-          raise Error, "Invalid log level setting [#{log_level}]"
+        ##-- thread options
+        if thnum = cascading_config( 'thread_count' ) then
+          parts << "-thnum #{thnum}"
         end
-      end
+        if tout = cascading_config( 'session_timeout' ) then
+          parts << "-tout #{tout}"
+        end
 
-      ##-- update logs
-      parts << "-ulog #{ulog_dir}"
-      if ulim = cascading_config( 'update_log_size' )then
-        parts << "-ulim #{ulim}"
-      end
-      parts << "-uas" if cascading_config( 'update_log_async' )
+        ##-- daemoization and pid
+        parts << "-dmn" if cascading_config( 'daemonize' )
+        parts << "-pid #{pid_file}"
 
-      ##-- replication items, server id, master, replication timestamp file
-      parts << "-sid #{configuration.server_id}"       if configuration.server_id
-      parts << "-mhost #{configuration.master_server}" if configuration.master_server
-      parts << "-mport #{configuration.master_port}"   if configuration.master_port
-      parts << "-rts #{replication_timestamp_file}" if configuration.replication_timestamp_file
 
-      ##-- lua extension
-      if configuration.lua_extension_file then
-        if File.exist?( lua_extension_file ) then
-          parts << "-ext #{lua_extension_file}" 
-          if pc = configuration.periodic_command then
-            if pc.name and pc.period then
-              parts << "-extpc #{pc.name} #{pc.period}"
-            end
+        ##-- logging
+        parts << "-log #{log_file}"
+        if log_level = cascading_config( 'log_level' ) then
+          if log_level == "error" then
+            parts << "-le"
+          elsif log_level == "debug" then
+            parts << "-ld" 
+          elsif log_level == "info" then
+            # leave it at info
+          else
+            raise Error, "Invalid log level setting [#{log_level}]"
           end
         end
+
+        ##-- update logs
+        parts << "-ulog #{ulog_dir}"
+        if ulim = cascading_config( 'update_log_size' )then
+          parts << "-ulim #{ulim}"
+        end
+        parts << "-uas" if cascading_config( 'update_log_async' )
+
+        ##-- replication items, server id, master, replication timestamp file
+        parts << "-sid #{configuration.server_id}"       if configuration.server_id
+        parts << "-mhost #{configuration.master_server}" if configuration.master_server
+        parts << "-mport #{configuration.master_port}"   if configuration.master_port
+        parts << "-rts #{replication_timestamp_file}" if configuration.replication_timestamp_file
+
+        ##-- lua extension
+        if configuration.lua_extension_file then
+          if File.exist?( lua_extension_file ) then
+            parts << "-ext #{lua_extension_file}" 
+            if pc = configuration.periodic_command then
+              if pc.name and pc.period then
+                parts << "-extpc #{pc.name} #{pc.period}"
+              end
+            end
+          else
+            logger.warn "lua extension file #{lua_extension_file} does not exist"
+          end
+        end
+
+        ##-- command permissiosn
+        if deny = cascading_config( "deny_commands" ) then
+          parts << "-mask #{deny.join(",")}"
+        end
+
+        if allow = cascading_config( "allow_commands" ) then
+          parts << "-unmask #{allow.join(",")}"
+        end
+
+        ##-- now for the filename.  The format is
+        #  filename.ext#opts=ld#mode=wc#tuning_param=value#tuning_param=value...
+        #
+        file_pairs = []
+        file_pairs << "opts=#{configuration.opts}"
+        file_pairs << "mode=#{configuration.mode}"
+        Loquacious::Configuration::Iterator.new( configuration.tuning_params ).each do |node|
+          file_pairs << "#{node.name}=#{node.obj}" if node.obj
+        end
+
+        file_name_and_params = "#{db_file}##{file_pairs.join("#")}"
+
+        parts << file_name_and_params
+
+        @start_command = parts.join( " " )
       end
 
-      ##-- command permissiosn
-      if deny = cascading_config( "deny_commands" ) then
-        parts << "-mask #{deny.join(",")}"
-      end
-
-      if allow = cascading_config( "allow_commands" ) then
-        parts << "-unmask #{allow.join(",")}"
-      end
-
-      ##-- now for the filename.  The format is
-      #  filename.ext#opts=ld#mode=wc#tuning_param=value#tuning_param=value...
-      #
-      file_pairs = []
-      file_pairs << "opts=#{configuration.opts}"
-      file_pairs << "mode=#{configuration.mode}"
-      Loquacious::Configuration::Iterator.new( configuration.tuning_params ).each do |node|
-        file_pairs << "#{node.name}=#{node.obj}" if node.obj
-      end
-
-      file_name_and_params = "#{db_file}##{file_pairs.join("#")}"
-
-      parts << file_name_and_params
-
-      return parts.join( " " )  
+      return @start_command
     end
 
     #
