@@ -325,7 +325,12 @@ class TyrantManager
       if host == "0.0.0.0" then
         host = "localhost"
       end
-      Rufus::Tokyo::Tyrant.new( configuration.host, configuration.port.to_i )
+      tclass = Rufus::Tokyo::Tyrant
+
+      if configuration.type == "table" then
+        tclass = Rufus::Tokyo::TyrantTable
+      end
+      tclass.new( configuration.host, configuration.port.to_i )
     end
 
     #
