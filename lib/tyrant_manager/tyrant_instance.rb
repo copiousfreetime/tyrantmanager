@@ -166,6 +166,17 @@ class TyrantManager
       @replication_timestamp_file ||= append_to_home_if_not_absolute( configuration.replication_timestamp_file )
     end
 
+    #
+    # Valid index styles as defined by Tokyo Cabinet
+    #
+    # See Tokyo Cabinet source code, tctdbstrtoindex() in
+    # tctdb.c
+    #
+    def index_types
+      %w[ lex lexical str dec decimal num tok token qgr qgram fts void optimize ]
+    end
+
+
 
     #
     # Start command.
@@ -246,13 +257,21 @@ class TyrantManager
         end
 
         ##-- now for the filename.  The format is
-        #  filename.ext#opts=ld#mode=wc#tuning_param=value#tuning_param=value...
+        #  filename.ext#opts=ld#mode=wc#tuning_param=value#tuning_param=value#idx=field:dec...
         #
         file_pairs = []
         file_pairs << "opts=#{configuration.opts}"
         file_pairs << "mode=#{configuration.mode}"
         Loquacious::Configuration::Iterator.new( configuration.tuning_params ).each do |node|
           file_pairs << "#{node.name}=#{node.obj}" if node.obj
+        end
+
+        if configuration.type == "table" then
+          Loquacious::Configuration::Iterator.new( configuration.indexes ).each do |index_node|
+            if index_node.obj and index_types.include?( index_node.obj.downcase ) then
+              file_pairs << "idx=#{index_node.name}:#{index_node.obj}"
+            end
+          end
         end
 
         file_name_and_params = "#{db_file}##{file_pairs.join("#")}"

@@ -159,6 +159,27 @@ Loquacious::Configuration.for( "<%= instance_name %>" ) do
   }
 
   desc <<-txt
+  Column index configuration.  This is in the format of 'column_name' 'index type'
+  Tuning parameters.  Each of these alters a tuning parameter on the database.
+
+  Indexes only apply to databases of type 'table'.  A column may have only one 
+  index.
+
+  The available index types are:
+  |  lexical   - lexical string
+  |  decimal   - decimal string
+  |  token     - token inverted index
+  |  qgram     - q-gram inverted index
+  |  optimize  - the index is optimize
+  |  void      - the index is removed
+  txt
+
+  indexes {
+    # my_col [ "lexical" | "decimal" | "token" | "qgram" | "optimize" | "void" ]
+  }
+
+
+  desc <<-txt
   The directory holding the database file.  By default this is relative
   to the instance directory.  If you want to put it somewhere else, then
   put the full path here.
