@@ -266,7 +266,7 @@ class TyrantManager
           file_pairs << "#{node.name}=#{node.obj}" if node.obj
         end
 
-        if configuration.type == "table" then
+        if configuration.type == "table" and configuration.indexes then
           Loquacious::Configuration::Iterator.new( configuration.indexes ).each do |index_node|
             if index_node.obj and index_types.include?( index_node.obj.downcase ) then
               file_pairs << "idx=#{index_node.name}:#{index_node.obj}"

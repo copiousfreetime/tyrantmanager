@@ -1,4 +1,8 @@
 = Changelog
+== Version 1.2.1 2009-09-14
+
+* fix bug where preexisting instance configuration does not work with 1.2.0
+
 == Version 1.2.0 2009-09-13
 
 * have TyrantInstance use TyrantTable or Tyrant as appropriate for the connection
