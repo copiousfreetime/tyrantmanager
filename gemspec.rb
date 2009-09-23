@@ -23,10 +23,10 @@ TyrantManager::GEM_SPEC = Gem::Specification.new do |spec|
   spec.add_dependency( "loquacious", "~> 1.3.0")
   spec.add_dependency( "rufus-tokyo", "~> 1.0.0")
   spec.add_dependency( "logging", "~> 1.1.4" )
-  spec.add_dependency( "main", "~> 2.8.4" )
+  spec.add_dependency( "main", "~> 2.9.0" )
 
   # development dependencies
-  spec.add_development_dependency("configuration", ">= 0.0.5")
+  spec.add_development_dependency("configuration", "~> 1.1.0")
   spec.add_development_dependency( "rake", "~> 0.8.3")
 
   if ext_conf = Configuration.for_if_exist?("extension") then
