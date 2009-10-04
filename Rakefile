@@ -30,7 +30,7 @@ Configuration.for("project") {
   version   TyrantManager::VERSION
   author    "Jeremy Hinegardner"
   email     "jeremy@copiousfreetime.org"
-  homepage  "http://tyrant-manager.rubyforge.org/"
+  homepage  "http://copiousfreetime.rubyforge.org/tyrantmanager"
 }
 
 #-------------------------------------------------------------------------------
