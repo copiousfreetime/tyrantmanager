@@ -289,7 +289,16 @@ class TyrantManager
     #
     def start
       o = %x[ #{start_command} ]
-      logger.info o
+      o.strip!
+      logger.info o if o.length > 0 
+      3.times do |x|
+        if self.running? then
+          logger.info "#{self.name} is running as pid #{self.pid}"
+          break
+        else
+          sleep 0.25
+        end
+      end
     end
 
     # 
@@ -304,7 +313,8 @@ class TyrantManager
         logger.info "Process #{_pid} is beyond my control"
       rescue Errno::ESRCH
         logger.info "Process #{_pid} is dead"
-      rescue => e
+        cleanup_pid_file
+     rescue => e
         logger.error "Problem sending kill(TERM, #{_pid}) : #{e}"
       end
     end
@@ -326,6 +336,7 @@ class TyrantManager
         logger.info "Process #{_pid} is beyond my control"
       rescue Errno::ESRCH
         logger.info "Process #{_pid} is dead"
+        cleanup_pid_file
         return false
       rescue => e
         logger.error "Problem sending kill(0, #{_pid}) : #{e}"
@@ -379,6 +390,20 @@ class TyrantManager
 
  
     private
+
+    def cleanup_pid_file
+      if File.exist?( self.pid_file ) then
+        logger.warn "Pid file #{self.pid_file} still exists."
+        logger.warn "The tyrant server may have exited with a failure."
+        logger.warn "Here are the last few lines of the log file (#{self.log_file}):"
+        lines = %x[ tail -10 #{self.log_file} ]
+        lines.split("\n").each do |l|
+          logger.warn "   #{l.strip}"
+        end
+        logger.warn "Cleaning up stale pid file for #{self.pid}"
+        File.unlink( self.pid_file )
+      end
+    end
 
     #
     # take the given path, and if it is not an absolute path append it 
