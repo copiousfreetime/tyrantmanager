@@ -19,7 +19,7 @@ class TyrantManager
       argument( :home ) {
         description "The home directory of the tyrant manager"
         required
-        default TyrantManager.default_or_home_directory
+        default ::TyrantManager.default_or_home_directory
       }
 
       run { 
@@ -44,7 +44,7 @@ class TyrantManager
       mixin :option_home
       mixin :option_log_level
 
-      run { Cli.run_command_with_params( "create-instance", params ) }
+      run { ::TyrantManager::Cli.run_command_with_params( "create-instance", params ) }
     }
 
     mode( 'start' ) {
@@ -57,7 +57,7 @@ class TyrantManager
         default false
       }
 
-      run { Cli.run_command_with_params( 'start', params ) }
+      run { ::TyrantManager::Cli.run_command_with_params( 'start', params ) }
     }
 
 
@@ -67,7 +67,7 @@ class TyrantManager
       mixin :option_log_level
       mixin :argument_instances
 
-      run { Cli.run_command_with_params( 'stop', params ) }
+      run { ::TyrantManager::Cli.run_command_with_params( 'stop', params ) }
     }
 
     mode('replication-status') {
@@ -75,7 +75,7 @@ class TyrantManager
       mixin :option_home
       mixin :option_log_level
       mixin :argument_instances
-      run { Cli.run_command_with_params( 'replication-status', params ) }
+      run { ::TyrantManager::Cli.run_command_with_params( 'replication-status', params ) }
     }
 
     mode('process-status') {
@@ -85,7 +85,7 @@ class TyrantManager
 
       mixin :argument_instances
 
-      run { Cli.run_command_with_params( 'process-status', params ) }
+      run { ::TyrantManager::Cli.run_command_with_params( 'process-status', params ) }
     }
 
     mode( 'stats' ) {
@@ -95,7 +95,7 @@ class TyrantManager
 
       mixin :argument_instances
 
-      run { Cli.run_command_with_params( 'stats', params ) }
+      run { ::TyrantManager::Cli.run_command_with_params( 'stats', params ) }
     }
 
 
@@ -104,7 +104,7 @@ class TyrantManager
       mixin :option_home
       mixin :option_log_level
       mixin :argument_instances
-      run { Cli.run_command_with_params( 'list', params ) }
+      run { ::TyrantManager::Cli.run_command_with_params( 'list', params ) }
     }
 
     #--- Mixins ---
@@ -113,7 +113,7 @@ class TyrantManager
         description "The home directory of the tyrant manager"
         argument :required
         validate { |v| ::File.directory?( v ) }
-        default TyrantManager.default_or_home_directory
+        default ::TyrantManager.default_or_home_directory
       end
     end
 
