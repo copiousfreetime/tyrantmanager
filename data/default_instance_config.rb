@@ -237,6 +237,12 @@ Loquacious::Configuration.for( "<%= instance_name %>" ) do
   replication_timestamp_file "<%= instance_name %>.rts"
 
   desc <<-txt
+  Do consistency check on the replication and stop replication if
+  an inconsistency is detected.
+  txt
+  replication_consistency_check nil
+
+  desc <<-txt
   The name of a file to load as a lua extension.  By default this 
   is relative to the root of the instance directory.  This file will
   only be loaded if it exists.

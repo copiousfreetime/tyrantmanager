@@ -232,6 +232,7 @@ class TyrantManager
         parts << "-mhost #{configuration.master_server}" if configuration.master_server
         parts << "-mport #{configuration.master_port}"   if configuration.master_port
         parts << "-rts #{replication_timestamp_file}" if configuration.replication_timestamp_file
+        parts << "-rcc" if configuration.replication_consistency_check
 
         ##-- lua extension
         if configuration.lua_extension_file then
