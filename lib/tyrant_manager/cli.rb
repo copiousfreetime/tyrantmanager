@@ -1,3 +1,5 @@
+gem 'fattr', '~> 1.1.0'
+gem 'main', "~> 2.9.3"
 require 'main'
 require 'tyrant_manager'
 
