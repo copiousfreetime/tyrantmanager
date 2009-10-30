@@ -1,7 +1,8 @@
 = Changelog
-== Version 1.3.1 2009-10-15
+== Version 1.3.1 2009-10-29
 
 * add -rcc option to ttserver commandline 
+* fix 'fattr' gem dependency
 
 == Version 1.3.0 2009-10-04
 
