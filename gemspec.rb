@@ -28,7 +28,6 @@ TyrantManager::GEM_SPEC = Gem::Specification.new do |spec|
   # development dependencies
   spec.add_development_dependency("configuration", "~> 1.1.0")
   spec.add_development_dependency( "rake", "~> 0.8.3")
-  spec.add_development_dependency( "gemcutter", "~> 0.1.4")
 
   if ext_conf = Configuration.for_if_exist?("extension") then
     spec.extensions << ext_conf.configs

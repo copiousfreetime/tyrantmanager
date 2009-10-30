@@ -1,7 +1,4 @@
-
-require 'tasks/config'    
-gem 'gemcutter'
-require 'rake/gemcutter_pushtask'
+require 'tasks/config'
 
 #-----------------------------------------------------------------------
 # Gemcutter additions to the task library
@@ -9,10 +6,10 @@ require 'rake/gemcutter_pushtask'
 namespace :dist do
   desc "Release files to gemcutter"
 
-  GemCutter::Rake::PushTask.new do |t|
-    t.gem_file = File.expand_path( File.join( "pkg", "#{TyrantManager::GEM_SPEC.full_name}.gem" ) )
+  task :push :=> :gem do
+    gem_file = File.expand_path( File.join( "pkg", "#{TyrantManager::GEM_SPEC.full_name}.gem" ) )
+    %x[ gem push -V #{gem_file} ].each do |line|
+      puts line
+    end
   end
-
-  task :push => :gem
-
 end
