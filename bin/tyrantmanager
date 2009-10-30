@@ -7,4 +7,5 @@
 
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'tyrant_manager'
-::TyrantManager::Cli.new( ARGV, ENV ).run
+#::TyrantManager::Cli.new( ARGV, ENV ).run
+::TyrantManager::Cli.build( ARGV, ENV ).new.run
