@@ -109,6 +109,29 @@ class TyrantManager
       run { ::TyrantManager::Cli.run_command_with_params( 'list', params ) }
     }
 
+    mode( 'archive-ulogs' ) {
+      description "Archive the ulog files that are no longer necessary for replication"
+      mixin :option_home
+      mixin :option_log_level
+      mixin :argument_instances
+
+      option( 'archive-method' ) {
+        description "The method of archiving, compress, or delete.  Choosing 'delete' will also delete previously 'compressed' ulog files."
+        argument :required
+        validate { |m| %w[ compress delete ].include?( m.lower ) }
+        default "compress"
+      }
+
+      option( 'dry-run' ) {
+        description "Do not archive, just show the commands"
+        default false
+      }
+
+      run { ::TyrantManager::Cli.run_command_with_params( 'archive-ulogs', params ) }
+
+    }
+
+
     #--- Mixins ---
     mixin :option_home do
       option( :home ) do
