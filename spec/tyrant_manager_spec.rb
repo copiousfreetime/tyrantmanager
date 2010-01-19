@@ -51,7 +51,7 @@ describe TyrantManager do
     @mgr.configuration.ttserver.should == "ttserver"
   end
 
-  it "knows all its instances" do
+  it "iterates over all its instances" do
     3.times do |x|
       idir   = @mgr.instances_path( "test#{x}" )
       TyrantManager::TyrantInstance.setup( idir )
@@ -66,4 +66,21 @@ describe TyrantManager do
 
     names.sort.should == %w[ test0 test1 test2 ]
   end
+
+  it "iterates over a subset of instances" do
+    3.times do |x|
+      idir   = @mgr.instances_path( "test#{x}" )
+      TyrantManager::TyrantInstance.setup( idir )
+    end
+
+    @mgr.instances.size.should == 3
+    names = []
+    @mgr.each_instance( %w[ test0 test2] ) do |i|
+      i.name.should =~ /test\d/
+      names << i.name
+    end
+
+    names.sort.should == %w[ test0 test2 ]
+  end
+
 end

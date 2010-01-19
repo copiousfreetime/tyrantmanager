@@ -211,9 +211,17 @@ class TyrantManager
     return @instances
   end
 
-  def each_instance
+  # Yield each instance that exists in the limit list, if the limit exists.  
+  # If the limit does not exist then yield each instance.
+  #
+  def each_instance( limit = %w[ all ])
+    limit = [ limit ].flatten
+    every = (limit.first == "all")
+
     instances.keys.sort.each do |name|
-      yield instances[name]
+      if every or limit.include?( name ) then
+        yield instances[name]
+      end
     end
   end
 

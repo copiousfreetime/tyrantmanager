@@ -12,12 +12,10 @@ class TyrantManager
       end
 
       def run
-        manager.each_instance do |instance|
-          ilist = options['instances']
-          if ilist  == %w[ all ] or ilist.include?( instance.name ) then
-            if instance.running? and instance.is_slave? then
-              s_stat = instance.stat
-              logger.info "#{instance.name} is replicating from #{s_stat['mhost']}:#{s_stat['mport']}"
+        manager.each_instance( options['instances'] ) do |instance|
+          if instance.running? and instance.is_slave? then
+            s_stat = instance.stat
+            logger.info "#{instance.name} is replicating from #{s_stat['mhost']}:#{s_stat['mport']}"
               if m_conn = validate_master_connection( instance ) then
                 if validate_master_master( instance.connection, m_conn ) then
                   m_stat = m_conn.stat
@@ -41,8 +39,7 @@ class TyrantManager
                   logger.info "  Failover master : #{f_name} -> #{f_stat['rnum']} records, last replicated #{failover.stat['delay']} seconds ago"
                 end
               end
-              logger.info ""
-            end
+            logger.info ""
           end
         end
       end

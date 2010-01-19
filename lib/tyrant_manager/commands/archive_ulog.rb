@@ -12,6 +12,7 @@ class TyrantManager
       end
 
       def run
+        manager.each_instance( options['instances'] ) do 
         
       end
     end
