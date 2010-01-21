@@ -52,24 +52,18 @@ class TyrantManager
 
         if ( m_stat['mhost'] and m_stat['mport'] ) then
           logger.info "  #{s_stat['mhost']}:#{s_stat['mport']} is replicating from #{m_stat['mhost']}:#{m_stat['mport']}"
-          mm_ip = ip_of( m_stat['mhost'] )
-          s_ip = ip_of( slave.host )
+          mm_ip = manager.ip_of( m_stat['mhost'] )
+          s_ip = manager.ip_of( slave.host )
           if ( s_ip == mm_ip ) and ( slave.port == m_stat['mport'].to_i ) then
             #logger.info "    - this is a good master-master relationship"
             return true 
           else
             logger.error "  Unsupported replication configuration!!!"
             logger.error "  (original hostnames) #{slave.host}:#{slave.port} -> #{(master.host)}:#{master.port} -> #{m_stat['mhost']}:#{m_stat['mport']}"
-            logger.error "  (hostnames resolved) #{s_ip}:#{slave.port} -> #{ip_of(master.host)}:#{master.port} -> #{ip_of(m_stat['mhost'])}:#{m_stat['mport']}"
+            logger.error "  (hostnames resolved) #{s_ip}:#{slave.port} -> #{manager.ip_of(master.host)}:#{master.port} -> #{manager.ip_of(m_stat['mhost'])}:#{m_stat['mport']}"
             return false
           end
         end
-      end
-
-      def ip_of( hostname )
-        hostname = Socket.gethostname if %w[ localhost 0.0.0.0 ].include?( hostname )
-        addr_info = Socket.getaddrinfo( hostname, 1978, "AF_INET" )
-        return addr_info.first[3]
       end
 
       def validate_master_connection( slave ) 
