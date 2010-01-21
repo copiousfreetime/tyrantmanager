@@ -28,10 +28,10 @@ class TyrantManager
                   end
 
                   p_stat = primary.stat
-                  p_name = "#{ip_of( primary.host )}:#{primary.port}"
+                  p_name = "#{manager.ip_of( primary.host )}:#{primary.port}"
 
                   f_stat = failover.stat
-                  f_name = "#{ip_of( failover.host )}:#{failover.port}"
+                  f_name = "#{manager.ip_of( failover.host )}:#{failover.port}"
 
                   n_width = [ p_name.length, f_name.length ].max
 
