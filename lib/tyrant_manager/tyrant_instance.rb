@@ -370,12 +370,20 @@ class TyrantManager
     end
 
     #
+    # Return the host:port connection string of the instance
+    #
+    def connection_string
+      "#{configuration.host}:#{configuration.port}"
+    end
+
+    #
     # Is this instance a slave of another server?  This means it could be in a
-    # master-slave or master-master relationship
+    # master-slave or master-master relationship.  returns true or false
+    # explicitly
     #
     def is_slave?
       s = connection.stat
-      return (s['mhost'] and s['mport'])
+      return ((s['mhost'] and s['mport']) ? true : false )
     end
 
     #
@@ -389,6 +397,26 @@ class TyrantManager
       return nil
     end
 
+    #
+    # Is this instance in a master-master relationship with another server.
+    # This means that it is a slave, and its master server is also a slave of
+    # this server
+    #
+    def is_master_master?
+      if mc = self.master_connection then
+        mstat = mc.stat
+        mslave_host = manager.ip_of(mstat['mhost'])
+        mslave_port = mstat['mport']
+
+        mslave_conn_string = "#{mslave_host}:#{mslave_port}"
+
+        my_host = manager.ip_of( configuration.host )
+        my_conn_string = "#{my_host}:#{configuration.port}"
+
+        return my_conn_string == mslave_conn_string
+      end
+      return false
+    end
  
     private
 

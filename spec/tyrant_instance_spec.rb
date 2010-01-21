@@ -12,19 +12,33 @@ describe TyrantManager::TyrantInstance  do
         'slave_1'          => nil,
         'master_master_1'  => nil,
         'master_master_2'  => nil 
-      }
+    }
  
     TyrantManager::Log.silent {
 
       @mgr = TyrantManager.setup( @tyrant_manager_dir)
 
-     @instances.keys.each do |name|
-        idir = @mgr.instances_path( name )
-        tyrant = TyrantManager::TyrantInstance.setup( idir )
-        tyrant.manager = @mgr
-        @instances[name] = tyrant
-      end
+      @instances.keys.each_with_index do |name, idx|
+         idir = @mgr.instances_path( name )
+         tyrant = TyrantManager::TyrantInstance.setup( idir )
+         tyrant.manager = @mgr
+         tyrant.configuration.port += idx
+         tyrant.configuration.server_id = tyrant.configuration.port
+         @instances[name] = tyrant
+       end
     }
+
+    # set the slave_1 to be a slave of the standalone
+    @instances['slave_1'].configuration.master_server = "localhost"
+    @instances['slave_1'].configuration.master_port   = @instances['standalone'].configuration.port
+
+    # set the master_master pairs into a master_master relationship
+    @instances['master_master_1'].configuration.master_server = "localhost"
+    @instances['master_master_1'].configuration.master_port   = @instances['master_master_2'].configuration.port
+
+    @instances['master_master_2'].configuration.master_server = "localhost"
+    @instances['master_master_2'].configuration.master_port   = @instances['master_master_1'].configuration.port
+
   end
 
   after( :each ) do
@@ -66,31 +80,65 @@ describe TyrantManager::TyrantInstance  do
 
   describe "against running instances" do
     before( :each ) do
-      @instances['standalone'].start
-      start = Time.now
-      loop do
-        break if @instances['standalone'].running?
-        sleep 0.1
-        break if (Time.now - start) > 2
+      @instances.each_pair do |name, instance|
+        instance.start
+        start = Time.now
+        #print "#{name} : starting ->"
+        loop do
+          break if instance.running?
+          #print "+"
+          $stdout.flush
+          sleep 0.1
+          break if (Time.now - start) > 3
+        end
+        #puts
       end
     end
 
     after( :each ) do
-      @instances['standalone'].stop
+      @instances.each_pair do |name, instance|
+        instance.stop
+        start = Time.now
+        #print "#{name} : stopping ->"
+        loop do
+          break unless instance.running?
+          #print  "-"
+          $stdout.flush
+          sleep 0.1
+          break if (Time.now - start) > 3
+        end
+        #puts
+      end
     end
 
-    it "#is_slave? when it is not a slave" do
+    it "#is_running?" do
+      @instances.each_pair do |name, instance|
+        [ name, instance.running? ].should == [ name, true ]
+      end
+    end
+
+    it "#is_slave? when it is NOT a slave" do
       @instances['standalone'].running?.should == true
-      @instances['standalone'].should_not be_is_slave
-      @instances['standalone'].stop
+      @instances['standalone'].is_slave?.should == false
     end
 
     it "#is_slave? when it IS a slave" do
-      @instances['standalone'].running?.should == true
-      @instances['standalone'].should be_is_slave
-      @instances['standalone'].stop
+      @instances['slave_1'].running?.should == true
+      @instances['slave_1'].is_slave?.should == true
     end
 
+    it "#is_master_master? when it is NOT in a master_master relationship" do
+      @instances['slave_1'].running?.should == true
+      @instances['slave_1'].is_master_master?.should == false
+    end
+
+    it "#is_master_master? when it IS in a master_master relationship" do
+      @instances['master_master_1'].running?.should == true
+      @instances['master_master_1'].is_master_master?.should == true
+
+      @instances['master_master_2'].running?.should == true
+      @instances['master_master_2'].is_master_master?.should == true
+    end
   end
 
 
