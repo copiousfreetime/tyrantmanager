@@ -1,5 +1,5 @@
 = Changelog
-== Version 1.4.0 2010-01-19
+== Version 1.4.0 2010-01-21
 
 * add 'archive-ulogs' command to allow for compression or removal of ulogs no
   longer needed for replication
