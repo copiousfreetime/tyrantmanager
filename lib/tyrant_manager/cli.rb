@@ -118,13 +118,19 @@ class TyrantManager
       option( 'archive-method' ) {
         description "The method of archiving, compress, or delete.  Choosing 'delete' will also delete previously 'compressed' ulog files."
         argument :required
-        validate { |m| %w[ compress delete ].include?( m.lower ) }
+        validate { |m| %w[ compress delete ].include?( m.downcase ) }
         default "compress"
       }
 
       option( 'dry-run' ) {
         description "Do not archive, just show the commands"
         default false
+      }
+
+      option( 'slaves' ) {
+        description "Comma separated list of slave instances connection strings host:port,host:port,..."
+        argument :required
+        cast :list_of_string
       }
 
       run { ::TyrantManager::Cli.run_command_with_params( 'archive-ulogs', params ) }

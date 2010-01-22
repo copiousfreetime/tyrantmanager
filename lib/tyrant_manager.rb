@@ -7,10 +7,12 @@ require 'rubygems'
 require 'loquacious'
 require 'tyrant_manager/version'
 require 'tyrant_manager/paths'
+require 'tyrant_manager/util'
 require 'tyrant_manager/log'
 
 class TyrantManager
   include TyrantManager::Paths
+  include TyrantManager::Util
 
   class Error < StandardError; end
 
@@ -135,6 +137,8 @@ class TyrantManager
       end
       return TyrantManager.new( dir )
     end
+
+
   end
 
   #

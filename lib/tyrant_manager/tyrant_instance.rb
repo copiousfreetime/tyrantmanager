@@ -153,6 +153,13 @@ class TyrantManager
     end
 
     #
+    # The list of .ulog files that are in the ulog/ directory
+    #
+    def ulog_files
+      Dir.glob( "#{ulog_dir}/*.ulog" ).sort
+    end
+
+    #
     # The lua extension file
     #
     def lua_extension_file
@@ -412,8 +419,9 @@ class TyrantManager
 
         my_host = manager.ip_of( configuration.host )
         my_conn_string = "#{my_host}:#{configuration.port}"
+        logger.debug "#is_master_master? -> my_conn_string = #{my_conn_string} mslave_conn_string = #{mslave_conn_string}"
 
-        return my_conn_string == mslave_conn_string
+        return (my_conn_string == mslave_conn_string)
       end
       return false
     end
