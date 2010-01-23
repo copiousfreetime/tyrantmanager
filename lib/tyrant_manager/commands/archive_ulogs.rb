@@ -61,7 +61,7 @@ class TyrantManager
               %x[ gzip #{fname} ] unless options['dry-run']
               manager.logger.info "#{leader} compressed #{fname}"
             else
-              manager.logger.info "#{leader} already compressed #{fname}"
+              manager.logger.debug "#{leader} already compressed #{fname}"
             end
           end
         end
