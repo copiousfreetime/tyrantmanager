@@ -127,6 +127,22 @@ class TyrantManager
         default false
       }
 
+      option( 'force' ) {
+        description "Force a record through the master to the slave so the replication timestamps are updated."
+        default false
+        cast :boolean
+      }
+
+      option('force-key') {
+        description "When used with --force, this is the key that is forced from the master to the slaves.
+        The value iinserted at the key is the current timestamp in the form 
+        #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
+        argument :required
+        default "__tyrant_manager.force_replication_at"
+        cast :string
+      }
+
+
       option( 'slaves' ) {
         description "Comma separated list of slave instances connection strings host:port,host:port,..."
         argument :required

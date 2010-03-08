@@ -1,4 +1,9 @@
 = Changelog
+== Version 1.5.0 2010-03-07
+
+* update archive-ulog command with --force option to insert a record 
+  and force a replication to take place
+
 == Version 1.4.1 2010-01-22
 
 * reduce the logging level of a skipped operation to debug

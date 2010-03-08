@@ -12,13 +12,22 @@ class TyrantManager
     # 
     # Give the slaves of a particular master
     #
-    #   tyrantmanager archive-ulogs master1 --slaves slave1:11011,slave2:11012,slave3:11013 
+    #     tyrantmanager archive-ulogs master1 --slaves slave1:11011,slave2:11012,slave3:11013 
     #
     # Or if there is a master-master relationship tyrant manager can figure it
     # out.
     #
-    #   tyrantmanager archive-ulogs master1
+    #     tyrantmanager archive-ulogs master1
     #
+    # Sometimes it is useful to force a record from the master to the slave(s)
+    # so that the replication timestamp (rts) in the slaves is updated.
+    #
+    # This is mainly useful for archiving the ulog files in the failover master
+    # of a master-master setup.  The failover may never have an updated 'rts'
+    # value since its slave is the primary master, and the primary master may
+    # not have replicated from the failover master in quite some time.
+    #
+    #    tyrantemanager archive-ulogs --force
     #
     class ArchiveUlogs < Command
       def self.command_name
@@ -27,18 +36,31 @@ class TyrantManager
 
       def run
         instance_slaves = determine_master_slave_mappings( options['slaves'] )
+        current_timestamp = Time.now.strftime("%Y-%m-%d %H:%M:%S")
 
         manager.each_instance( options['instances'] ) do |instance|
           if instance.is_master_master? then
             manager.logger.debug "#{instance.name} is master_master"
             instance_slaves[instance.connection_string] << instance.master_connection
+
+            if options['force'] then
+              msg = "Forcing a record #{options['force-key']} => #{current_timestamp} from master #{instance.connection_string} through to slaves"
+              msg = "(dry-run) #{msg}" if options['dry-run']
+              manager.logger.info msg
+              if not options['dry-run'] then
+                c = 
+                instance.connection[options['force-key']] = current_timestamp
+              end
+            end
           end
+
           slave_connections = instance_slaves[instance.connection_string]
 
           potential_removals = potential_ulog_archive_files( instance )
           manager.logger.info "Checking #{slave_connections.size} slaves of #{instance.name}"
 
           slave_connections.each do |conn|
+            manager.logger.info "Slave has #{options['force-key']} => #{conn[options['force-key']]}" if options['force']
             potential_removals = trim_potential_removals( instance, potential_removals, conn )
           end
 
@@ -77,7 +99,7 @@ class TyrantManager
         milliseconds = Float( slave_stat['rts'] )
         last_replication_at = Time.at( milliseconds  / 1_000_000 )
 
-        manager.logger.debug "Slave #{slave_conn.host}:#{slave_conn.port} last replicated at #{last_replication_at.strftime("%Y-%m-%d %H:%M:%S")} from #{master_instance.connection_string}"
+        manager.logger.info "Slave #{slave_conn.host}:#{slave_conn.port} last replicated at #{last_replication_at.strftime("%Y-%m-%d %H:%M:%S")} from #{master_instance.connection_string}"
 
         if milliseconds.to_i == 0 then
           manager.logger.warn "It appears that the slave at #{slave_conn.host}:#{slave_conn.port} has never replicated"
@@ -102,8 +124,10 @@ class TyrantManager
       # time.
       #
       def remove_newer_than( potential, whence )
+        fmt = "%Y-%m-%d %H:%M:%S"
         potential.keys.sort.each do |fname|
           if potential[fname] > whence then
+            manager.logger.info " ulog #{fname} timestamp #{potential[fname].strftime(fmt)} is newer than #{whence.strftime(fmt)}. Skipping."
             potential.delete( fname )
           end
         end
@@ -126,6 +150,7 @@ class TyrantManager
         return potential
       end
 
+      #
       # Given a list of slaves, create a hash that has as the key, the instance
       # connection string of a master, as as the value, an array of
       # Rufus::Tokyo::Tyrant connections.
