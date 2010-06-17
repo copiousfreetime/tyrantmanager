@@ -20,9 +20,9 @@ TyrantManager::GEM_SPEC = Gem::Specification.new do |spec|
   spec.executables  = pkg.files.bin.collect { |b| File.basename(b) }
 
   # add dependencies here
-  spec.add_dependency( "loquacious", "~> 1.3.0")
-  spec.add_dependency( "rufus-tokyo", "~> 1.0.0")
-  spec.add_dependency( "logging", "~> 1.4.0" )
+  spec.add_dependency( "loquacious", "~> 1.6.4")
+  spec.add_dependency( "rufus-tokyo", "~> 1.0.1")
+  spec.add_dependency( "logging", "~> 1.4.3" )
   spec.add_dependency( "main", "~> 4.2.0" )
 
   # development dependencies

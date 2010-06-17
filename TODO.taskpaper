@@ -4,4 +4,8 @@ Tyrant Manager:
         - startup script generation -- simple shell, executes the tyrant-manager
         - main command line -- all the commands, and they take an optional instance
           or all -- no default
-            - remove -- not yet
+        - remove -- not yet
+    Configuration:
+        - Fix cascading config so it is not a work around for Loquacious 
+          nattering on about undefined values.  A proper merged config
+          would be better.

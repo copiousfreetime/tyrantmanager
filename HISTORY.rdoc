@@ -1,4 +1,8 @@
 = Changelog
+== Version 1.6.0 2010-06-17
+
+* update to loquacious 1.6.x
+
 == Version 1.5.1 2010-05-19
 
 * update to logging 1.4.x

@@ -457,8 +457,17 @@ class TyrantManager
     # retrieve the cascading option from our config or the managers config if we
     # don't have it.
     #
+    # FIXME: For now this is a workaround for the warnings that are printed 
+    #        in loquacious 1.6.x for accessing undefined items.  Better
+    #        solution would be a merged config that does not alter the manager's
+    #        config
+    #
     def cascading_config( name )
-      configuration[name] || manager.configuration.instance_defaults[name]
+      if configuration.respond_to?( name ) then
+        configuration[name] || manager.configuration.instance_defaults[name]
+      else
+        manager.configuration.instance_defaults[name]
+      end
     end
   end
 end
