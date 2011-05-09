@@ -24,6 +24,7 @@ TyrantManager::GEM_SPEC = Gem::Specification.new do |spec|
   spec.add_dependency( "rufus-tokyo", "~> 1.0.1")
   spec.add_dependency( "logging", "~> 1.4.3" )
   spec.add_dependency( "main", "~> 4.2.0" )
+  spec.add_dependency( 'ffi', "~> 1.0.7" ) # unsure why this doesn't get resolved with rufus-tokyo
 
   # development dependencies
   spec.add_development_dependency("configuration", "~> 1.1.0")
