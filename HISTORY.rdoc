@@ -2,7 +2,8 @@
 == Version 1.6.1 2011-05-08
 
 * update to rufus-tokyo 1.0.7
-* force an FFI dependency that for some reason does not resolve in rufus-tokyo
+* force an FFI dependency that for some reason does not resolve in rufus-tokyo [GH #8]
+* fix documentation of 'process-status' [GH #9]
 
 == Version 1.6.0 2010-06-17
 
