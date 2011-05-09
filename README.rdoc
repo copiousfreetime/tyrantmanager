@@ -12,7 +12,8 @@
 
 == SYNOPSIS
 
-  tyrantmanager (setup|create-instance|start|stop|status|stats|list) [options]+
+  tyrantmanager
+  (setup|create-instance|start|stop|process-status|replication-status|stats|list) [options]+
 
 == DESCRIPTION
 
@@ -177,7 +178,7 @@ the ttserver command line that was used is output.
 
 As you can see the commandline used to start the tyrant server is output.
 
-    jeremy@playground:/tmp/tyrant % tyrantmanager status
+    jeremy@playground:/tmp/tyrant % tyrantmanager process-status
     00:52:17  INFO : bar is running as pid 28658
     00:52:17  INFO : baz is running as pid 28670
     00:52:17  INFO : foo is running as pid 28682
@@ -194,7 +195,7 @@ As you can see the commandline used to start the tyrant server is output.
 
 And see that they are all done
 
-    jeremy@playground:/tmp/tyrant % tyrantmanager status
+    jeremy@playground:/tmp/tyrant % tyrantmanager process-status
     00:53:15  INFO : bar is not running, or its pid file is gone
     00:53:15  INFO : baz is not running, or its pid file is gone
     00:53:15  INFO : foo is not running, or its pid file is gone
@@ -209,7 +210,7 @@ And see that they are all done
 
 Foo and baz are started, bar is still stopped
 
-    jeremy@playground:/tmp/tyrant % tyrantmanager status
+    jeremy@playground:/tmp/tyrant % tyrantmanager process-status
     00:54:38  INFO : bar is not running, or its pid file is gone
     00:54:38  INFO : baz is running as pid 28708
     00:54:38  INFO : foo is running as pid 28720
@@ -222,7 +223,7 @@ Foo and baz are started, bar is still stopped
 
 And baz is still running
 
-    jeremy@playground:/tmp/tyrant % tyrantmanager status
+    jeremy@playground:/tmp/tyrant % tyrantmanager process-status
     00:55:51  INFO : bar is not running, or its pid file is gone
     00:55:51  INFO : baz is running as pid 28708
     00:55:51  INFO : foo is not running, or its pid file is gone
