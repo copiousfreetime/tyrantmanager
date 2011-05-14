@@ -1,5 +1,4 @@
-require 'rubygems'
-require 'spec'
+require 'rspec'
 require 'logging'
 
 $:.unshift File.expand_path( File.join( File.dirname( __FILE__ ),"..","lib"))
@@ -7,7 +6,7 @@ $:.unshift File.expand_path( File.join( File.dirname( __FILE__ ),"..","lib"))
 
 Logging::Logger['TyrantManager'].level = :all
 
-module Spec
+module RSpec
   module Log
     def self.io
       @io ||= StringIO.new
@@ -43,16 +42,16 @@ module Spec
   end
 end
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.include Spec::Helpers
 
   config.before do
-    Spec::Log.io.rewind
-    Spec::Log.io.truncate( 0 )
+    RSpec::Log.io.rewind
+    RSpec::Log.io.truncate( 0 )
   end
 
   config.after do
-    Spec::Log.io.rewind
-    Spec::Log.io.truncate( 0 )
+    RSpec::Log.io.rewind
+    RSpec::Log.io.truncate( 0 )
   end
 end
