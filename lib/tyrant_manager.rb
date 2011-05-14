@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2009 Jeremy Hinegardner
+# Copyright (c) 2009-2011 Jeremy Hinegardner
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 
@@ -31,13 +31,27 @@ class TyrantManager
       "tyrant"
     end
 
+    MAGIC_LINE = 'Loquacious::Configuration.for( "manager" ) do'
+
     #
     # is the given directory a tyrant root directory.  A tyrant root has a
-    # +config_file_basename+ file in the top level
+    # +config_file_basename+ file in the top level.  And that
+    # +config_file_basename+ file has the following line in it.
+    #
+    #   Loquacious::Configuration.for( "manager" ) do
+    #
+    # Consider this a 'magic line' in the config file.  If this line is in the
+    # config file then it is considered the top level tyrant root config file.
+    # This is done by line detection instead of evaluation since the
+    # configuration is not evaluated until later.
     #
     def is_tyrant_root?( dir )
       cfg = File.join( dir, config_file_basename )
-      return true if File.directory?( dir ) and File.exist?( cfg )
+      if File.directory?( dir ) and File.exist?( cfg ) then
+        IO.readlines( cfg ).each do |line|
+          return true if line.index( MAGIC_LINE )
+        end
+      end
       return false
     end
 
@@ -92,7 +106,7 @@ class TyrantManager
         dd = defaults.shift
         break if dd or defaults.empty?
       end
-      raise Error, "No default_directory found" unless dd
+      raise Error, "No default Tyrant Manager home directory found" unless dd
       return dd
     end
 
@@ -150,7 +164,7 @@ class TyrantManager
     if File.exist?( self.config_file ) then
       configuration # force a load
     else
-      raise Error, "#{home_dir} is not a valid archive. #{self.config_file} does not exist"
+      raise Error, "#{home_dir} is not a valid TyrantManager home. #{self.config_file} does not exist"
     end
   end
 

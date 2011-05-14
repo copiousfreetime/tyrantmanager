@@ -1,9 +1,14 @@
+#--
+# Copyright (c) 2009-2011 Jeremy Hinegardner
+# All rights reserved.  See LICENSE and/or COPYING for details.
+#++
+
 require 'main'
 require 'tyrant_manager'
 
 class TyrantManager
   Cli = Main.create {
-    author "Copyright 2009 (c) Jeremy Hinegardner"
+    author "Copyright (c) 2009-2011 Jeremy Hinegardner. All rights reserved"
     version ::TyrantManager::VERSION
 
     description <<-txt

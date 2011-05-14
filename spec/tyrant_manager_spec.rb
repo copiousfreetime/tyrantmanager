@@ -8,6 +8,7 @@ describe TyrantManager do
     TyrantManager::Log.silent {
       @mgr  = TyrantManager.setup( @tdir )
     }
+    ENV.delete( 'TYRANT_MANAGER_HOME' )
     #TyrantManager::Log.level = :debug
   end
 
@@ -27,6 +28,27 @@ describe TyrantManager do
       ENV['TYRANT_MANAGER_HOME'] = @tdir
       TyrantManager.default_directory.should == @tdir
     end
+
+    context "When the current directory is an instance's home directory" do
+      before do
+        ENV['TYRANT_MANAGER_HOME'] = @tdir
+        idir = @mgr.instances_path( "test" )
+        @test_instance = TyrantManager::TyrantInstance.setup( idir )
+      end
+
+      it "falls back to TYRANT_MANAGER_HOME if the current directory is not a valid tyrant manager home" do
+        Dir.chdir( @test_instance.home_dir ) do |d|
+          TyrantManager.default_directory.should == @tdir
+        end
+      end
+
+      it "raises an error if no default can be found" do
+        ENV.delete('TYRANT_MANAGER_HOME')
+        Dir.chdir( @test_instance.home_dir ) do |d|
+          lambda { TyrantManager.default_directory }.should raise_error( TyrantManager::Error, "No default Tyrant Manager home directory found" )
+        end
+      end
+    end
   end
 
   it "initializes with an existing directory" do
@@ -35,7 +57,7 @@ describe TyrantManager do
   end
 
   it "raises an error if attempting to initialize from a non-existent tyrnat home" do
-    lambda { TyrantManager.new( "/tmp" ) }.should raise_error( TyrantManager::Error, /\/tmp is not a valid archive/ )
+    lambda { TyrantManager.new( "/tmp" ) }.should raise_error( TyrantManager::Error, /\/tmp is not a valid TyrantManager home/ )
   end
 
   it "#config_file" do
@@ -44,7 +66,7 @@ describe TyrantManager do
   end
 
   it "#configuration" do
-    @mgr.configuration.should_not == nil
+    @mgr.configuration.nil?.should == false
   end
 
   it "has the location of the ttserver command" do

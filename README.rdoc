@@ -37,8 +37,18 @@ Once the manager home is setup, all other commands need to know about it.
 This can be achieved in 3 ways.
 
 * use the --home option on all commands
-* set the TYRANT_MANAGER_HOME environment variable
 * execute the commands when the current working directory is the tyrant home. 
+* set the TYRANT_MANAGER_HOME environment variable
+
+This is also the attempt order when looking for the manager home.  The process
+is:
+
+1. Check if --home is used, and that it is a valid tyrantmanager home. If that
+   is the case then use it.
+2. If --home is not used, then check if the current working directory has a
+   valid 'config.rb' file that is also a top level manager config.  If it is
+   then use that as the tyrant manager home.
+3. If all else fails, use the TYRANT_MAMAGER_HOME environment variable.
 
 === Creating a new tyrant instance
 
@@ -261,7 +271,7 @@ You can also look at the server statistics of each running instance
 
 == LICENSE
 
-Copyright (c) 2009, Jeremy Hinegardner
+Copyright (c) 2009-2011, Jeremy Hinegardner. All rights reserved
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above

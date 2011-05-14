@@ -1,6 +1,7 @@
 = Changelog
 == Version 1.7.0 2011-05-14
 
+* fix mistaking the instance config.rb for the manager's config.rb [GH #11].
 * force an FFI dependency that for some reason does not resolve in rufus-tokyo [GH #8]
 * fix documentation of 'process-status' [GH #9]
 * switch to Bones for project management tasks
