@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2009, 2010, 2011 Jeremy Hinegardner
+# Copyright (c) 2009-2011 Jeremy Hinegardner
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 
