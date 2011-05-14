@@ -43,7 +43,7 @@ module RSpec
 end
 
 RSpec.configure do |config|
-  config.include Spec::Helpers
+  config.include RSpec::Helpers
 
   config.before do
     RSpec::Log.io.rewind
