@@ -55,7 +55,7 @@ describe TyrantManager::TyrantInstance  do
   end
 
   it "#configuration" do
-    @instances['standalone'].configuration.should_not == nil
+    @instances['standalone'].configuration.nil?.should == false
   end
 
   it "#pid_file" do

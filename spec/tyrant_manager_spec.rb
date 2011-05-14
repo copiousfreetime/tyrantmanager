@@ -44,7 +44,7 @@ describe TyrantManager do
   end
 
   it "#configuration" do
-    @mgr.configuration.should_not == nil
+    @mgr.configuration.nil?.should == false
   end
 
   it "has the location of the ttserver command" do
