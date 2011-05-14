@@ -31,13 +31,27 @@ class TyrantManager
       "tyrant"
     end
 
+    MAGIC_LINE = 'Loquacious::Configuration.for( "manager" ) do'
+
     #
     # is the given directory a tyrant root directory.  A tyrant root has a
-    # +config_file_basename+ file in the top level
+    # +config_file_basename+ file in the top level.  And that
+    # +config_file_basename+ file has the following line in it.
+    #
+    #   Loquacious::Configuration.for( "manager" ) do
+    #
+    # Consider this a 'magic line' in the config file.  If this line is in the
+    # config file then it is considered the top level tyrant root config file.
+    # This is done by line detection instead of evaluation since the
+    # configuration is not evaluated until later.
     #
     def is_tyrant_root?( dir )
       cfg = File.join( dir, config_file_basename )
-      return true if File.directory?( dir ) and File.exist?( cfg )
+      if File.directory?( dir ) and File.exist?( cfg ) then
+        IO.readlines( cfg ).each do |line|
+          return true if line.index( MAGIC_LINE )
+        end
+      end
       return false
     end
 
