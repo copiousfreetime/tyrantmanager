@@ -92,7 +92,7 @@ class TyrantManager
         dd = defaults.shift
         break if dd or defaults.empty?
       end
-      raise Error, "No default_directory found" unless dd
+      raise Error, "No default Tyrant Manager home directory found" unless dd
       return dd
     end
 
@@ -150,7 +150,7 @@ class TyrantManager
     if File.exist?( self.config_file ) then
       configuration # force a load
     else
-      raise Error, "#{home_dir} is not a valid archive. #{self.config_file} does not exist"
+      raise Error, "#{home_dir} is not a valid TyrantManager home. #{self.config_file} does not exist"
     end
   end
 

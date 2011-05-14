@@ -35,7 +35,7 @@ describe TyrantManager do
   end
 
   it "raises an error if attempting to initialize from a non-existent tyrnat home" do
-    lambda { TyrantManager.new( "/tmp" ) }.should raise_error( TyrantManager::Error, /\/tmp is not a valid archive/ )
+    lambda { TyrantManager.new( "/tmp" ) }.should raise_error( TyrantManager::Error, /\/tmp is not a valid TyrantManager home/ )
   end
 
   it "#config_file" do
