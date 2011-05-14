@@ -2,7 +2,8 @@
 
 * Homepage[http://copiousfreetime.org/projects/tyrantmanager]
 * email jeremy at copiousfreetime dot org
-* github[http://github.com/copiousfreetime/tyrantmanager]
+* {Github}[https://github.com/copiousfreetime/tyrantmanager]
+* {Bug Tracking}[https://github.com/copiousfreetime/tyrantmanager/issue]
 * git clone git://github.com/copiousfreetime/tyrantmanager.git
 
 == INSTALLATION
