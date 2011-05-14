@@ -6,7 +6,7 @@
 class TyrantManager
   module Version
     MAJOR   = 1
-    MINOR   = 6
+    MINOR   = 7
     BUILD   = 0
 
     def to_a 
