@@ -1,60 +1,53 @@
 #--
-# Copyright (c) 2009 Jeremy Hinegardner
+# Copyright (c) 2009, 2010, 2011 Jeremy Hinegardner
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 
-#-------------------------------------------------------------------------------
-# make sure our project's top level directory and the lib directory are added to
-# the ruby search path.
-#-------------------------------------------------------------------------------
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__),"lib"))
-$:.unshift File.expand_path(File.dirname(__FILE__))
+begin
+  require 'bones'
+rescue LoadError
+  abort '### Please install the "bones" gem ###'
+end
+
+task :default => 'spec:run'
+task 'gem:release' => 'spec:run'
+
+$:.unshift( "lib" )
+require 'tyrant_manager/version'
+
+Bones {
+  name    "tyrant_manager"
+  author  "Jeremy Hinegardner"
+  email   "jeremy@copiousfreetime.org"
+  url     "http://www.copiousfreetime.org/projects/tyrant_manager"
+  version TyrantManager::VERSION
+
+  ruby_opts     %w[ -W0 -rubygems ]
+  readme_file   "README.rdoc"
+  ignore_file   ".gitignore"
+  history_file  "HISTORY.rdoc"
+
+  rdoc.include << "README.rdoc" << "HISTORY.rdoc" << "LICENSE"
+
+  summary 'A command line tool for managing Tokyo Tyrant instances.'
+  description <<_
+A command line tool for managing Tokyo Tyrant instances.  It allows for the
+creation, starting, stopping, listing, stating of many tokyo tyrant instances
+all on the same machine.  The commands can be applied to a single or multiple
+instances.
+_
+
+  depend_on "loquacious"  ,"~> 1.7.1"
+  depend_on "rufus-tokyo" ,"~> 1.0.7"
+  depend_on "logging"     ,"~> 1.5.0"
+  depend_on "main"        ,"~> 4.4.0"
+  depend_on "ffi"         ,"~> 1.0.7" #unsure why this doesn't get resolved with rufus-tokyo
 
 
-#-------------------------------------------------------------------------------
-# load the global project configuration and add in the top level clean and
-# clobber tasks so that other tasks can utilize those constants if necessary
-# This loads up the defaults for the whole project configuration
-#-------------------------------------------------------------------------------
-require 'rubygems'
-require 'tasks/config.rb'
-require 'rake/clean'
+  depend_on "bones"       , "~> 3.6.5", :development
+  depend_on "bones-extras", "~> 1.3.0", :development
+  depend_on "rspec"       , "~> 2.6.0", :development
 
-#-------------------------------------------------------------------------------
-# Main configuration for the project, these overwrite the items that are in
-# tasks/config.rb
-#-------------------------------------------------------------------------------
-require 'tyrant_manager'
-Configuration.for("project") {
-  name      "tyrantmanager"
-  version   TyrantManager::VERSION
-  author    "Jeremy Hinegardner"
-  email     "jeremy@copiousfreetime.org"
-  homepage  "http://copiousfreetime.rubyforge.org/tyrantmanager"
+  spec.opts << "--colour" << "--format documentation"
 }
-
-#-------------------------------------------------------------------------------
-# load up all the project tasks and setup the default task to be the
-# test:default task.
-#-------------------------------------------------------------------------------
-Configuration.for("packaging").files.tasks.each do |tasklib|
-  import tasklib
-end
-task :default => 'test:default'
-
-#-------------------------------------------------------------------------------
-# Finalize the loading of all pending imports and update the top level clobber
-# task to depend on all possible sub-level tasks that have a name like
-# ':clobber'  in other namespaces.  This allows us to say:
-#
-#   rake clobber
-#
-# and it will get everything.
-#-------------------------------------------------------------------------------
-Rake.application.load_imports
-Rake.application.tasks.each do |t| 
-  if t.name =~ /:clobber/ then
-    task :clobber => [t.name] 
-  end 
-end
 
