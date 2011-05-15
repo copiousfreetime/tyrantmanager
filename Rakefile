@@ -16,7 +16,7 @@ $:.unshift( "lib" )
 require 'tyrant_manager/version'
 
 Bones {
-  name    "tyrant_manager"
+  name    "tyrantmanager"
   author  "Jeremy Hinegardner"
   email   "jeremy@copiousfreetime.org"
   url     "http://www.copiousfreetime.org/projects/tyrant_manager"
