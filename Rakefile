@@ -37,16 +37,17 @@ all on the same machine.  The commands can be applied to a single or multiple
 instances.
 _
 
-  depend_on "loquacious"  ,"~> 1.7.1"
+  depend_on "loquacious"  ,"~> 1.8.1"
   depend_on "rufus-tokyo" ,"~> 1.0.7"
   depend_on "logging"     ,"~> 1.5.0"
-  depend_on "main"        ,"~> 4.4.0"
-  depend_on "ffi"         ,"~> 1.0.7" #unsure why this doesn't get resolved with rufus-tokyo
+  depend_on "main"        ,"~> 4.6.0"
+  depend_on "ffi"         ,"~> 1.0.9" #unsure why this doesn't get resolved with rufus-tokyo
 
 
-  depend_on "bones"       , "~> 3.6.5", :development
-  depend_on "bones-extras", "~> 1.3.0", :development
-  depend_on "rspec"       , "~> 2.6.0", :development
+  depend_on "bones"       , "~> 3.7.1", :development
+  depend_on "bones-rspec" , "~> 1.0.1", :development
+  depend_on "rspec"       , "~> 1.6.0", :development
+  depend_on "rake"        , "~> 0.9.2", :development
 
   spec.opts << "--colour" << "--format documentation"
 }
