@@ -17,7 +17,7 @@ require 'tyrant_manager/version'
 
 Bones {
   name    "tyrantmanager"
-  author  "Jeremy Hinegardner"
+  authors "Jeremy Hinegardner"
   email   "jeremy@copiousfreetime.org"
   url     "http://www.copiousfreetime.org/projects/tyrant_manager"
   version TyrantManager::VERSION
