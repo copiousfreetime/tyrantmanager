@@ -45,7 +45,7 @@ _
 
 
   depend_on "bones"       , "~> 3.7.1", :development
-  depend_on "bones-rspec" , "~> 1.0.1", :development
+  depend_on "bones-rspec" , "~> 2.0.1", :development
   depend_on "rspec"       , "~> 2.6.0", :development
   depend_on "rake"        , "~> 0.9.2", :development
 
