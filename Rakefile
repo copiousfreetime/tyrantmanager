@@ -39,7 +39,7 @@ _
 
   depend_on "loquacious"  ,"~> 1.8.1"
   depend_on "rufus-tokyo" ,"~> 1.0.7"
-  depend_on "logging"     ,"~> 1.5.0"
+  depend_on "logging"     ,"~> 1.6.1"
   depend_on "main"        ,"~> 4.6.0"
   depend_on "ffi"         ,"~> 1.0.9" #unsure why this doesn't get resolved with rufus-tokyo
 
