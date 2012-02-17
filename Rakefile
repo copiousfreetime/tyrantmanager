@@ -19,10 +19,10 @@ Bones {
   name    "tyrantmanager"
   authors "Jeremy Hinegardner"
   email   "jeremy@copiousfreetime.org"
-  url     "http://www.copiousfreetime.org/projects/tyrant_manager"
+  url     "https://github.com/copiousfreetime/tyrantmanager"
   version TyrantManager::VERSION
 
-  ruby_opts     %w[ -W0 -rubygems ]
+  ruby_opts     %w[ -w -rubygems ]
   readme_file   "README.rdoc"
   ignore_file   ".gitignore"
   history_file  "HISTORY.rdoc"
@@ -37,17 +37,17 @@ all on the same machine.  The commands can be applied to a single or multiple
 instances.
 _
 
-  depend_on "loquacious"  ,"~> 1.8.1"
+  depend_on "loquacious"  ,"~> 1.9.1"
   depend_on "rufus-tokyo" ,"~> 1.0.7"
   depend_on "logging"     ,"~> 1.6.1"
   depend_on "main"        ,"~> 4.6.0"
   depend_on "ffi"         ,"~> 1.0.9" #unsure why this doesn't get resolved with rufus-tokyo
 
 
-  depend_on "bones"       , "~> 3.7.1", :development
+  depend_on "bones"       , "~> 3.7.3", :development
   depend_on "bones-rspec" , "~> 2.0.1", :development
-  depend_on "rspec"       , "~> 2.6.0", :development
-  depend_on "rake"        , "~> 0.9.2", :development
+  depend_on "rspec"       , "~> 2.8.0", :development
+  depend_on "rake"        , "~> 0.9.2.2", :development
 
   spec.opts << "--colour" << "--format documentation"
 }
