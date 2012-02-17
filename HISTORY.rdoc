@@ -1,4 +1,9 @@
 = Changelog
+== Version 1.7.6 2012-02-17
+
+* Update to newer versions of all dependencies
+* Cleanup ruby -w output
+
 == Version 1.7.5 2011-09-06
 
 * Update to newer versions of all dependencies
