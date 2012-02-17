@@ -31,7 +31,7 @@ describe TyrantManager::Command do
 
   it "classes cannot be run without implementing 'run'" do
     j = Junk.new( nil )
-    j.respond_to?(:run).should == true
+    j.respond_to?(:run).should be == true
     lambda { j.run }.should raise_error( NotImplementedError, /The #run method must be implemented/)
   end
 end

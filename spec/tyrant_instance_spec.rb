@@ -50,12 +50,12 @@ describe TyrantManager::TyrantInstance  do
   end
 
   it "#config_file" do
-    @instances['standalone'].config_file.should == File.join( @tyrant_manager_dir, "instances", "standalone", "config.rb" )
-    File.exist?( @instances['standalone'].config_file ).should == true
+    @instances['standalone'].config_file.should be == File.join( @tyrant_manager_dir, "instances", "standalone", "config.rb" )
+    File.exist?( @instances['standalone'].config_file ).should be == true
   end
 
   it "#configuration" do
-    @instances['standalone'].configuration.nil?.should == false
+    @instances['standalone'].configuration.nil?.should be == false
   end
 
   it "#pid_file" do
@@ -118,26 +118,26 @@ describe TyrantManager::TyrantInstance  do
     end
 
     it "#is_slave? when it is NOT a slave" do
-      @instances['standalone'].running?.should == true
-      @instances['standalone'].is_slave?.should == false
+      @instances['standalone'].running?.should be == true
+      @instances['standalone'].is_slave?.should be == false
     end
 
     it "#is_slave? when it IS a slave" do
-      @instances['slave_1'].running?.should == true
-      @instances['slave_1'].is_slave?.should == true
+      @instances['slave_1'].running?.should be == true
+      @instances['slave_1'].is_slave?.should be == true
     end
 
     it "#is_master_master? when it is NOT in a master_master relationship" do
-      @instances['slave_1'].running?.should == true
-      @instances['slave_1'].is_master_master?.should == false
+      @instances['slave_1'].running?.should be == true
+      @instances['slave_1'].is_master_master?.should be == false
     end
 
     it "#is_master_master? when it IS in a master_master relationship" do
-      @instances['master_master_1'].running?.should == true
-      @instances['master_master_1'].is_master_master?.should == true
+      @instances['master_master_1'].running?.should be== true
+      @instances['master_master_1'].is_master_master?.should be == true
 
-      @instances['master_master_2'].running?.should == true
-      @instances['master_master_2'].is_master_master?.should == true
+      @instances['master_master_2'].running?.should be == true
+      @instances['master_master_2'].is_master_master?.should be == true
     end
   end
 

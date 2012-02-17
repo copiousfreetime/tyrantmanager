@@ -49,7 +49,7 @@ class TyrantManager
     attr_reader :home_dir
 
     # the name of this instance
-    attr_reader :name 
+    attr_reader :name
 
     # the manager that is associated with this instance
     attr_accessor :manager
@@ -82,7 +82,7 @@ class TyrantManager
     # load the configuration
     #
     def configuration
-      unless @configuration then
+      unless defined? @configuration then
         eval(  IO.read( self.config_file ) )
         @configuration = Loquacious::Configuration.for( name )
       end
@@ -135,7 +135,7 @@ class TyrantManager
     # The full path to the database file.
     #
     def db_file( type = configuration.type )
-      unless @db_file then
+      unless defined? @db_file then
         @db_file = case type
                    when "memory-hash" then "*"
                    when "memory-tree" then "+"
@@ -165,20 +165,6 @@ class TyrantManager
     end
 
     #
-    # The lua extension file
-    #
-    def lua_extension_file
-      @lua_extension_file ||= append_to_home_if_not_absolute( configuration.lua_extension_file )
-    end
-
-    #
-    # The replication timestamp file
-    #
-    def replication_timestamp_file
-      @replication_timestamp_file ||= append_to_home_if_not_absolute( configuration.replication_timestamp_file )
-    end
-
-    #
     # Valid index styles as defined by Tokyo Cabinet
     #
     # See Tokyo Cabinet source code, tctdbstrtoindex() in
@@ -197,7 +183,7 @@ class TyrantManager
     # into one big commandline item.  
     #
     def start_command
-      unless @start_command then
+      unless defined? @start_command then
         ##-- ttserver executable
         parts = [ manager.configuration.ttserver ]
 

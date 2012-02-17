@@ -160,7 +160,7 @@ class TyrantManager
   # setting the home directory.
   #
   def initialize( directory = TyrantManager.default_directory )
-    self.home_dir = File.expand_path( directory ) 
+    self.home_dir = File.expand_path( directory )
     if File.exist?( self.config_file ) then
       configuration # force a load
     else
@@ -176,14 +176,14 @@ class TyrantManager
   # The configuration file for the manager
   #
   def config_file
-    @config_file ||= File.join( home_dir, TyrantManager.config_file_basename ) 
+    @config_file ||= File.join( home_dir, TyrantManager.config_file_basename )
   end
 
   #
   # load the configuration
   #
   def configuration
-    unless @configuration 
+    unless defined? @configuration
       eval( IO.read( self.config_file ) )
       @configuration = Loquacious::Configuration.for("manager")
     end
@@ -201,7 +201,7 @@ class TyrantManager
   # Return the list of instances that the manager knows about
   #
   def instances
-    unless @instances then
+    unless defined? @instances then
       candidates = [ self.instances_path ]
       if configuration.instances then
         candidates = configuration.instances

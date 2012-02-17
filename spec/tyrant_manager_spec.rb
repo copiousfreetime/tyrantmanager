@@ -61,8 +61,8 @@ describe TyrantManager do
   end
 
   it "#config_file" do
-    @mgr.config_file.should == File.join( @tdir, "config.rb" )
-    File.exist?( @mgr.config_file ).should == true
+    @mgr.config_file.should be == File.join( @tdir, "config.rb" )
+    File.exist?( @mgr.config_file ).should be == true
   end
 
   it "#configuration" do
@@ -79,7 +79,7 @@ describe TyrantManager do
       TyrantManager::TyrantInstance.setup( idir )
     end
 
-    @mgr.instances.size.should == 3
+    @mgr.instances.size.should be == 3
     names = []
     @mgr.each_instance do |i|
       i.name.should =~ /test\d/
@@ -95,7 +95,7 @@ describe TyrantManager do
       TyrantManager::TyrantInstance.setup( idir )
     end
 
-    @mgr.instances.size.should == 3
+    @mgr.instances.size.should be == 3
     names = []
     @mgr.each_instance( %w[ test0 test2] ) do |i|
       i.name.should =~ /test\d/
