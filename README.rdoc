@@ -1,4 +1,4 @@
-== Tyrant Manager
+== Tyrant Manager - (THIS PROJECT IS ARCHIVED AND NO LONGER MAINTAINED)
 
 * Homepage[http://copiousfreetime.org/projects/tyrantmanager]
 * email jeremy at copiousfreetime dot org
